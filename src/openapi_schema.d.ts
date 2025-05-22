@@ -327,6 +327,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/pages/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Home */
+        get: operations["home_pages__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pages/team/{team_slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Team */
+        get: operations["team_pages_team__team_slug__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -381,10 +415,6 @@ export interface components {
             short_name: string;
             /** Time Zone */
             time_zone: string;
-            /** N Games Per Round */
-            n_games_per_round?: number | null;
-            /** Start Datetime */
-            start_datetime?: string | null;
         };
         /** ScoreUpdate */
         ScoreUpdate: {
@@ -414,6 +444,30 @@ export interface components {
             slug: string;
             /** Color */
             color: string | null;
+        };
+        /** TeamResponse */
+        TeamResponse: {
+            /** Games */
+            games: {
+                [key: string]: components["schemas"]["GameExport"];
+            };
+            /** Teams */
+            teams: {
+                [key: string]: components["schemas"]["TeamExport"];
+            };
+            /** Locations */
+            locations: {
+                [key: string]: components["schemas"]["LocationExport"];
+            };
+            /** Games Known Ids */
+            games_known_ids: number[];
+            /** Games Unknown Ids */
+            games_unknown_ids: number[];
+            /** Team Id */
+            team_id: number;
+            division: components["schemas"]["DivisionExport"];
+            /** Featured Game Id */
+            featured_game_id: number | null;
         };
         /** TournamentExport */
         TournamentExport: {
@@ -1049,6 +1103,57 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VisitExport"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    home_pages__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    team_pages_team__team_slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                team_slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamResponse"];
                 };
             };
             /** @description Validation Error */

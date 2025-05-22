@@ -1,10 +1,22 @@
 import { useState, useEffect } from 'react';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { apiClient } from './apiClient';
-import { CallApiOptions, UseApiCallReturn } from '../types';
+import {
+  CallApiOptions,
+  UseApiCallReturn,
+  ResponseContentType,
+  ResponseStatusCode,
+  ResponseDataTypeByStatusCode,
+  ResponseDataType,
+  ApiService,
+  RequestContentType,
+  RequestDataType,
+  ValidMethodsForPath,
+} from '../types';
 import { paths, operations, components } from '../openapi_schema';
 import openapi_schema from '../../../openapi_schema.json';
 import { config } from '../config/config';
+import { BsPatchPlus } from 'react-icons/bs';
 
 export async function callApi<TResponseData, TRequestData = any>({
   url,
@@ -24,169 +36,13 @@ export async function callApi<TResponseData, TRequestData = any>({
 
     return response;
   } catch (error) {
-    console.log(error);
-    return error.response;
+    throw error;
   }
 }
 
-export type RequestContentType<TOperation> = TOperation extends {
-  requestBody:
-    | { content: infer ContentTypes }
-    | { content?: infer ContentTypes };
-}
-  ? keyof ContentTypes
-  : never;
-
-export type ResponseContentType<TOperation> = TOperation extends {
-  responses: infer Responses;
-}
-  ? {
-      [StatusCode in keyof Responses]: Responses[StatusCode] extends {
-        content: infer ContentTypes;
-      }
-        ? keyof ContentTypes
-        : never;
-    }[keyof Responses]
-  : never;
-
-export type ResponseStatusCode<TOperation> = TOperation extends {
-  responses: infer Responses;
-}
-  ? keyof Responses
-  : never;
-
-export type ResponseDataTypeByStatusCode<
-  TOperation,
-  TResponseContentType extends ResponseContentType<TOperation> = ResponseContentType<TOperation>,
-  TResponseStatusCode extends ResponseStatusCode<TOperation> = ResponseStatusCode<TOperation>
-> = TOperation extends {
-  responses: infer Responses;
-}
-  ? {
-      [K in keyof Responses]: K extends TResponseStatusCode
-        ? Responses[K] extends {
-            content: infer ContentTypes;
-          }
-          ? TResponseContentType extends keyof ContentTypes
-            ? ContentTypes[TResponseContentType]
-            : never
-          : never
-        : never;
-    }
-  : never;
-
-export type ResponseDataType<
-  TOperation,
-  TResponseContentType extends ResponseContentType<TOperation> = ResponseContentType<TOperation>,
-  TResponseStatusCode extends ResponseStatusCode<TOperation> = ResponseStatusCode<TOperation>,
-  TResponseDataByStatus = ResponseDataTypeByStatusCode<
-    TOperation,
-    TResponseContentType,
-    TResponseStatusCode
-  >
-> = TResponseDataByStatus[keyof TResponseDataByStatus];
-
-export type RequestDataTypeProp<
-  TOperation,
-  TRequestContentType extends RequestContentType<TOperation> = RequestContentType<TOperation>
-> = TOperation extends {
-  requestBody: infer RequestBody;
-}
-  ? RequestBody extends { content: infer ContentTypes }
-    ? { data: ContentTypes[keyof ContentTypes & TRequestContentType] }
-    : RequestBody extends { content?: infer ContentTypes }
-    ? { data?: ContentTypes[keyof ContentTypes & TRequestContentType] }
-    : { data?: never }
-  : TOperation extends { requestBody?: infer RequestBody }
-  ? RequestBody extends
-      | { content: infer ContentTypes }
-      | { content?: infer ContentTypes }
-    ? { data?: ContentTypes[keyof ContentTypes & TRequestContentType] }
-    : { data?: never }
-  : { data?: never };
-
-export type RequestDataType<
-  TOperation,
-  TRequestContentType extends RequestContentType<TOperation> = RequestContentType<TOperation>
-> = RequestDataTypeProp<TOperation, TRequestContentType>['data'];
-
-export type RequestParamsTypeProp<TOperation> = TOperation extends {
-  parameters: infer Params;
-}
-  ? Params extends { query: infer U }
-    ? { params: U }
-    : Params extends { query?: infer U }
-    ? { params?: U }
-    : { params?: never }
-  : // whenever the generic isn't set
-    { params?: never };
-
-export type RequestParamsType<TOperation> =
-  RequestParamsTypeProp<TOperation>['params'];
-
-export type RequestPathParamsTypeProp<TOperation> = TOperation extends {
-  parameters: infer Params;
-}
-  ? Params extends { path: infer U }
-    ? { pathParams: U }
-    : Params extends { path?: infer U }
-    ? { pathParams?: U }
-    : { pathParams?: never }
-  : // whenever the generic isn't set
-    { pathParams?: never };
-
-export type RequestPathParamsType<TOperation> =
-  RequestPathParamsTypeProp<TOperation>['pathParams'];
-
-// Extract the parameters type for the ApiService function
-export type ApiServiceCallParams<
-  TPath extends keyof paths,
-  TMethod extends keyof paths[TPath],
-  TRequestContentType extends RequestContentType<paths[TPath][TMethod]>,
-  TRequestData
-> = Omit<
-  CallApiOptions<TRequestData>,
-  'url' | 'method' | 'data' | 'params' | 'pathParams'
-> &
-  RequestDataTypeProp<paths[TPath][TMethod], TRequestContentType> &
-  RequestParamsTypeProp<paths[TPath][TMethod]> &
-  RequestPathParamsTypeProp<paths[TPath][TMethod]>;
-
-export type ApiService<
-  TPath extends keyof paths,
-  TMethod extends keyof paths[TPath],
-  TResponseContentType extends ResponseContentType<paths[TPath][TMethod]>,
-  TResponseStatusCode extends ResponseStatusCode<paths[TPath][TMethod]>,
-  TResponseDataByStatus extends ResponseDataTypeByStatusCode<
-    paths[TPath][TMethod],
-    TResponseContentType,
-    TResponseStatusCode
-  >,
-  TResponseDataType extends ResponseDataType<
-    paths[TPath][TMethod],
-    TResponseContentType,
-    TResponseStatusCode
-  >,
-  TRequestContentType extends RequestContentType<paths[TPath][TMethod]>,
-  TRequestDataType extends RequestDataType<
-    paths[TPath][TMethod],
-    TRequestContentType
-  >
-> = {
-  call: (
-    options: ApiServiceCallParams<
-      TPath,
-      TMethod,
-      TRequestContentType,
-      TRequestDataType
-    >
-  ) => Promise<AxiosResponse<TResponseDataType>>;
-  responses: TResponseDataByStatus;
-};
-
 export function createApiService<
   TPath extends keyof paths,
-  TMethod extends keyof paths[TPath] & AxiosRequestConfig['method'],
+  TMethod extends ValidMethodsForPath<TPath> & AxiosRequestConfig['method'],
   TResponseContentType extends ResponseContentType<
     paths[TPath][TMethod]
   > = ResponseContentType<paths[TPath][TMethod]>,
@@ -221,8 +77,8 @@ export function createApiService<
 >(
   path: TPath,
   method: TMethod,
-  requestContentType?: TRequestContentType,
-  responseContentType?: TResponseContentType
+  requestContentType?: TRequestContentType | null,
+  responseContentType?: TResponseContentType | null
 ): ApiService<
   TPath,
   TMethod,
@@ -235,10 +91,10 @@ export function createApiService<
 > {
   // default to find the content type from the first request content
   if (!requestContentType) {
-    requestContentType = openapi_schema.paths[path][method as string]
-      ?.requestBody?.content
+    requestContentType = openapi_schema.paths[path][method]?.requestBody
+      ?.content
       ? (Object.keys(
-          openapi_schema.paths[path][method as string].requestBody.content
+          openapi_schema.paths[path][method].requestBody.content
         )[0] as TRequestContentType)
       : null;
   }

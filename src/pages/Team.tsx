@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { useApiData } from '../utils/api';
+import { useApiCall } from '../utils/api';
 import { useParams } from 'react-router-dom';
 import { NotFound } from '../components/Team/NotFound';
 import { paths, operations, components } from '../openapi_schema';
@@ -8,19 +8,23 @@ import { Link as GameLink } from '../components/Game/Link';
 import { CardPreview } from '../components/Game/CardPreview';
 import { DivisionCard } from '../components/Standings/DivisionCard';
 import { Panels } from '../components/Schedule/Team';
-
-const API_PATH = '/pages/team/{slug}';
+import { getTeamPage } from '../services/apiServices';
+import { stat } from 'fs';
 
 function Team() {
-  const { teamSlug } = useParams();
+  const teamSlug = useParams()
+    .teamSlug as components['schemas']['TeamExport']['slug'];
 
-  const [data, setData, loading, setLoading, status, setStatus] = useApiData<
-    paths[typeof API_PATH]['get']['responses']['200']['content']['application/json']
-  >(API_PATH.replace('{slug}', teamSlug));
+  const { data, loading, status, refetch } = useApiCall(getTeamPage, {
+    pathParams: {
+      team_slug: teamSlug,
+    },
+  });
 
   useEffect(() => {
-    if (data !== null) {
-      document.title = data.teams[data.team_id].name;
+    if (data !== null && data !== undefined) {
+      const apiData = data as (typeof getTeamPage.responses)['200'];
+      document.title = apiData?.teams[apiData.team_id]?.name ?? 'Team';
     } else {
       document.title = 'Team';
     }
@@ -28,7 +32,8 @@ function Team() {
 
   if (status === 404) {
     return <NotFound />;
-  }
+  } else if (loading || (status == 200 && data !== null)) {
+    data as (typeof getTeamPage.responses)['200'];
   return (
     <>
       <div className="page">
@@ -36,7 +41,7 @@ function Team() {
           <div className="flex flex-col items-center mt-4">
             <h1 className="text-center">
               <DotAndName
-                team={data === null ? null : data.teams[data.team_id]}
+                team={data === null ? null : data?.teams[data?.team_id]}
               />
             </h1>
           </div>
