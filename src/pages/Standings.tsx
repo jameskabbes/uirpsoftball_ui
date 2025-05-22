@@ -3,7 +3,7 @@ import { paths, operations, components } from '../openapi_schema';
 import { useApiData } from '../utils/api';
 import { Division } from '../components/Standings/Division';
 import { GridDiv } from '../components/GridDiv';
-import siteConfig from '../siteConfig.json';
+import { config } from '../config/config';
 
 const API_PATH = '/pages/standings';
 
@@ -27,15 +27,12 @@ function Standings() {
             <GridDiv
               n={
                 data === null
-                  ? siteConfig.default_n_divisions
+                  ? config.defaultNDivisions
                   : Object.keys(data.divisions).length
               }
             >
               {(data === null
-                ? Array.from(
-                    { length: siteConfig.default_n_divisions },
-                    () => null
-                  )
+                ? Array.from({ length: config.defaultNDivisions }, () => null)
                 : data.division_ids_ordered
               ).map((divisionId, index) => (
                 <div

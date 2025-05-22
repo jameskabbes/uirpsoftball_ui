@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useApiData } from '../utils/api';
-import siteConfig from '../siteConfig.json';
+import { config } from '../config/config';
 import { Panels } from '../components/Schedule/Week';
 import { Tournament } from '../components/Schedule/Tournament';
 import { paths, operations, components } from '../openapi_schema';
@@ -24,7 +24,7 @@ function Schedule() {
           <h1 className="text-center">Schedule</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {(data === null
-              ? Array.from({ length: siteConfig.default_n_rounds }, () => null)
+              ? Array.from({ length: config.defaultNRounds }, () => null)
               : data.game_ids_and_rounds
             ).map(
               (

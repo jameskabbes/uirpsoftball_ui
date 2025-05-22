@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Panels as BasePanels } from './Panels';
 import { getDate } from '../../utils/getDate';
 import { DateTime } from 'luxon';
-import siteConfig from '../../siteConfig.json';
+import { config } from '../../config/config';
 import { paths, operations, components } from '../../openapi_schema';
 
 type ScheduleAggregator = components['schemas']['ScheduleAggregator'];
@@ -56,7 +56,7 @@ function Panels({ data, roundId, admin = false, includeLink = true }: Props) {
                   locations: data.locations,
                 }
           }
-          loadingN={siteConfig.default_n_games_per_round}
+          loadingN={config.defaultNGamesPerRound}
           includeDate={false}
           includeLink={includeLink}
           admin={admin}

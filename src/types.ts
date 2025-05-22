@@ -31,6 +31,12 @@ interface ViteConfig {
 export interface FrontendConfig {
   VITE: ViteConfig;
   OPENAPI_SCHEMA_PATH: string;
+  UNKNOWN_COLOR: string;
+  DEFAULT_N_GAMES_PER_ROUND: number;
+  DEFAULT_N_ROUNDS: number;
+  DEFAULT_N_DIVISIONS: number;
+  DEFAULT_N_TEAMS_PER_DIVISION: number;
+  DEFAULT_N_DIVISIONS_PER_GAME: number;
 }
 
 export interface Config {
@@ -38,4 +44,10 @@ export interface Config {
   frontendUrl: string;
   vite: ViteConfig;
   openapiSchemaPath: string;
+  unknownColor: string;
+  defaultNGamesPerRound: number;
+  defaultNRounds: number;
+  defaultNDivisions: number;
+  defaultNTeamsPerDivision: number;
+  defaultNDivisionsPerGame: number;
 }

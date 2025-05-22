@@ -1,9 +1,9 @@
 import { paths, operations, components } from '../../openapi_schema';
-import siteConfig from '../../siteConfig.json';
+import { config } from '../../config/config';
 
 function getColor(team: components['schemas']['Team'] | null) {
   if (team === null || team?.color === null || team?.color === undefined) {
-    return siteConfig.unknown_color;
+    return config.unknownColor;
   } else {
     return team.color;
   }

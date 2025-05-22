@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { callApi, useApiData } from '../utils/api';
 import { Panels } from '../components/Schedule/Week';
-import siteConfig from '../siteConfig.json';
 import { paths, operations, components } from '../openapi_schema';
 
 import {

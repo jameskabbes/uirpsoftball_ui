@@ -1,14 +1,12 @@
 import { execFileSync } from 'child_process';
-import { Config } from './src/types';
-
-const config = import.meta.env.APP_CONFIG as Config;
+import { importedConfig } from './importConfig';
 
 import os from 'os';
 import path from 'path';
 
 const relativeOpenapiSchemaPath = path.relative(
   process.cwd(),
-  config.openapiSchemaPath
+  importedConfig.openapiSchemaPath
 );
 
 const cliSchemaPath = relativeOpenapiSchemaPath.split(path.sep).join('/');

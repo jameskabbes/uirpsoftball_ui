@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { TeamPanel } from './TeamPanel';
 import { Panel } from './Panel';
 import { Link as TeamLink } from '../Team/Link';
-import siteConfig from '../../siteConfig.json';
+import { config } from '../../config/config';
 import { paths, operations, components } from '../../openapi_schema';
 
 type DivisionAggregator = components['schemas']['DivisionAggregator'];
@@ -27,10 +27,7 @@ function DivisionCard({ data }: Props) {
         isHoverable={false}
       />
       {(data === null
-        ? Array.from(
-            { length: siteConfig.default_n_teams_per_division },
-            () => null
-          )
+        ? Array.from({ length: config.defaultNTeamsPerDivision }, () => null)
         : data.standings
       ).map((standing: null | components['schemas']['Standing'], index) => (
         <TeamLink

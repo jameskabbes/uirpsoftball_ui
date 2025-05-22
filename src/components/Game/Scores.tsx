@@ -3,7 +3,6 @@ import { paths, operations, components } from '../../openapi_schema';
 import { Dot as TeamDot } from '../Team/Dot';
 import { Link as TeamLink } from '../Team/Link';
 import { Score } from './Score';
-import siteConfig from '../../siteConfig.json';
 
 interface ComponentProps {
   game: components['schemas']['Game-Input'];

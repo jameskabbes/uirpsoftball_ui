@@ -1,7 +1,6 @@
 import { paths, operations, components } from '../../openapi_schema';
 import { DateTime } from 'luxon';
-
-import siteConfig from '../../siteConfig.json';
+import { config } from '../../config/config';
 
 function createEvent(
   game: components['schemas']['Game-Input'],
@@ -18,7 +17,7 @@ SUMMARY:UIRP Softball Game
 LOCATION:${location.name}: ${location.link}
 DESCRIPTION:${homeTeam.name} vs. ${awayTeam.name}\\nUmpires: ${
     officiatingTeam.name
-  }\\nGame Details: https://${siteConfig.domain_name}/game/${game.id}
+  }\\nGame Details: https://${config.frontendUrl}/game/${game.id}
 END:VEVENT`;
 }
 

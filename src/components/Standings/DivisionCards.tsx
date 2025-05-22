@@ -1,7 +1,7 @@
 import React from 'react';
 import { DivisionCard } from './DivisionCard';
 import { GridDiv } from '../GridDiv';
-import siteConfig from '../../siteConfig.json';
+import { config } from '../../config/config';
 import { paths, operations, components } from '../../openapi_schema';
 
 interface DataProps {
@@ -28,15 +28,12 @@ function DivisionCards({ data }: Props) {
       <GridDiv
         n={
           data === null
-            ? siteConfig.default_n_divisions_per_game
+            ? config.defaultNDivisionsPerGame
             : Object.keys(data.divisions).length
         }
       >
         {(data === null
-          ? Array.from(
-              { length: siteConfig.default_n_divisions_per_game },
-              () => null
-            )
+          ? Array.from({ length: config.defaultNDivisionsPerGame }, () => null)
           : data.division_ids_ordered
         ).map(
           (divisionID: components['schemas']['DivisionID'] | null, index) => (

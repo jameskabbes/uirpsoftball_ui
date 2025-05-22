@@ -1,6 +1,6 @@
 import React from 'react';
 import { paths, operations, components } from '../../openapi_schema';
-import siteConfig from '../../siteConfig.json';
+import { config } from '../../config/config';
 
 function Card({ image }: { image: components['schemas']['Image'] | null }) {
   return (
@@ -10,7 +10,7 @@ function Card({ image }: { image: components['schemas']['Image'] | null }) {
           <>
             <img
               className="w-full h-full object-cover rounded-lg"
-              src={`/${siteConfig.api_endpoint_base}/image/${image.id}`}
+              src={`${config.backendUrl}/image/${image.id}`}
             />
           </>
         )}

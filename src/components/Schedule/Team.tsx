@@ -3,7 +3,7 @@ import { createCalendar, downloadCalendar } from '../../utils/Calendar';
 import { createEvent } from '../Game/createEvent';
 import { BsCalendar2Plus } from 'react-icons/bs';
 import { Panels as BasePanels } from './Panels';
-import siteConfig from '../../siteConfig.json';
+import { config } from '../../config/config';
 import { paths, operations, components } from '../../openapi_schema';
 
 type ScheduleAggregator = components['schemas']['ScheduleAggregator'];
@@ -55,10 +55,7 @@ function Panels({ data }: Props) {
         </div>
         <div>
           {data === null ? (
-            <BasePanels
-              data={null}
-              loadingN={siteConfig.default_n_games_per_round}
-            />
+            <BasePanels data={null} loadingN={config.defaultNGamesPerRound} />
           ) : (
             <>
               <BasePanels

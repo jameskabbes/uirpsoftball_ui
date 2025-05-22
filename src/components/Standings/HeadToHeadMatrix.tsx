@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Dot as TeamDot } from '../Team/Dot';
 import { DotAndName } from '../Team/DotAndName';
-import siteConfig from '../../siteConfig.json';
+import { config } from '../../config/config';
 import { paths, operations, components } from '../../openapi_schema';
 
 function CustomGrid({ columns, children }) {
@@ -104,7 +104,7 @@ function HeadToHeadMatrix({ data }: Props) {
             </div>
             {(data === null
               ? Array.from(
-                  { length: siteConfig.default_n_teams_per_division },
+                  { length: config.defaultNTeamsPerDivision },
                   () => null
                 )
               : data.standings
@@ -120,14 +120,14 @@ function HeadToHeadMatrix({ data }: Props) {
             <CustomGrid
               columns={
                 data === null
-                  ? siteConfig.default_n_teams_per_division
+                  ? config.defaultNTeamsPerDivision
                   : data.standings.length
               }
             >
               {/* load the dots */}
               {(data === null
                 ? Array.from(
-                    { length: siteConfig.default_n_teams_per_division },
+                    { length: config.defaultNTeamsPerDivision },
                     () => null
                   )
                 : data.standings
@@ -144,7 +144,7 @@ function HeadToHeadMatrix({ data }: Props) {
               {/* load the head to head records */}
               {(headToHeadMatchups === null || headToHeadRecords === null
                 ? Array.from(
-                    { length: siteConfig.default_n_teams_per_division ** 2 },
+                    { length: config.defaultNTeamsPerDivision ** 2 },
                     () => null
                   )
                 : headToHeadMatchups
