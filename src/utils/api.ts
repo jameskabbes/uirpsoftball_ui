@@ -12,10 +12,11 @@ import {
   RequestContentType,
   RequestDataType,
   OperationMethodsForPath,
+  PathsWithOperations,
+  ApiServiceCallParams,
 } from '../types';
-import { paths, operations, components } from '../openapi_schema';
+import { paths, operations } from '../openapi_schema';
 import { config } from '../config/config';
-import { BsPatchPlus } from 'react-icons/bs';
 
 export async function callApi<TResponseData, TRequestData = any>({
   url,
@@ -40,7 +41,7 @@ export async function callApi<TResponseData, TRequestData = any>({
 }
 
 export function createApiService<
-  TPath extends keyof paths,
+  TPath extends PathsWithOperations,
   TMethod extends OperationMethodsForPath<TPath>,
   TResponseContentType extends ResponseContentType<
     paths[TPath][TMethod]
@@ -161,8 +162,8 @@ export function createApiService<
 }
 
 export function useApiCall<
-  TPath extends keyof paths,
-  TMethod extends keyof paths[TPath] & AxiosRequestConfig['method'],
+  TPath extends PathsWithOperations,
+  TMethod extends OperationMethodsForPath<TPath>,
   TResponseContentType extends ResponseContentType<paths[TPath][TMethod]>,
   TRequestContentType extends RequestContentType<paths[TPath][TMethod]>,
   TResponseStatusCode extends ResponseStatusCode<paths[TPath][TMethod]>,

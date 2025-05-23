@@ -15,11 +15,11 @@ export type NonNeverKeys<T> = {
   [K in keyof T]: T[K] extends never ? never : K;
 }[keyof T];
 
-export type AnyOperation = operations[keyof operations];
-export type IsOperation<T> = T extends AnyOperation ? true : false;
+export type OpenApiOperation = operations[keyof operations];
+export type IsOpenApiOperation<T> = T extends OpenApiOperation ? true : false;
 
 export type OperationKeys<T> = {
-  [K in keyof T]: IsOperation<T[K]> extends true ? K : never;
+  [K in keyof T]: IsOpenApiOperation<T[K]> extends true ? K : never;
 }[keyof T];
 
 export type PathsWithOperations = {
@@ -29,7 +29,7 @@ export type PathsWithOperations = {
 export type OperationMethodsForPath<TPath extends PathsWithOperations> =
   OperationKeys<paths[TPath]>;
 
-export type RequestContentType<TOperation extends AnyOperation> = [
+export type RequestContentType<TOperation extends OpenApiOperation> = [
   TOperation['requestBody']
 ] extends [never]
   ? never
@@ -39,7 +39,7 @@ export type RequestContentType<TOperation extends AnyOperation> = [
   ? keyof ContentTypes
   : never;
 
-export type ResponseContentType<TOperation extends AnyOperation> =
+export type ResponseContentType<TOperation extends OpenApiOperation> =
   TOperation extends {
     responses: infer Responses;
   }
@@ -52,7 +52,7 @@ export type ResponseContentType<TOperation extends AnyOperation> =
       }[keyof Responses]
     : never;
 
-export type ResponseStatusCode<TOperation extends AnyOperation> =
+export type ResponseStatusCode<TOperation extends OpenApiOperation> =
   TOperation extends {
     responses: infer Responses;
   }
@@ -60,7 +60,7 @@ export type ResponseStatusCode<TOperation extends AnyOperation> =
     : never;
 
 export type ResponseDataTypeByStatusCode<
-  TOperation extends AnyOperation,
+  TOperation extends OpenApiOperation,
   TResponseContentType extends ResponseContentType<TOperation> = ResponseContentType<TOperation>,
   TResponseStatusCode extends ResponseStatusCode<TOperation> = ResponseStatusCode<TOperation>
 > = TOperation extends {
@@ -80,7 +80,7 @@ export type ResponseDataTypeByStatusCode<
   : never;
 
 export type ResponseDataType<
-  TOperation extends AnyOperation,
+  TOperation extends OpenApiOperation,
   TResponseContentType extends ResponseContentType<TOperation> = ResponseContentType<TOperation>,
   TResponseStatusCode extends ResponseStatusCode<TOperation> = ResponseStatusCode<TOperation>,
   TResponseDataByStatus = ResponseDataTypeByStatusCode<
@@ -91,7 +91,7 @@ export type ResponseDataType<
 > = TResponseDataByStatus[keyof TResponseDataByStatus];
 
 export type RequestDataTypeProp<
-  TOperation extends AnyOperation,
+  TOperation extends OpenApiOperation,
   TRequestContentType extends RequestContentType<TOperation> = RequestContentType<TOperation>
 > = TOperation extends {
   requestBody: infer RequestBody;
@@ -110,7 +110,7 @@ export type RequestDataTypeProp<
   : { data?: never };
 
 export type RequestDataType<
-  TOperation extends AnyOperation,
+  TOperation extends OpenApiOperation,
   TRequestContentType extends RequestContentType<TOperation> = RequestContentType<TOperation>
 > = RequestDataTypeProp<TOperation, TRequestContentType>['data'];
 
@@ -125,10 +125,10 @@ export type RequestParamsTypeProp<TOperation> = TOperation extends {
   : // whenever the generic isn't set
     { params?: never };
 
-export type RequestParamsType<TOperation extends AnyOperation> =
+export type RequestParamsType<TOperation extends OpenApiOperation> =
   RequestParamsTypeProp<TOperation>['params'];
 
-export type RequestPathParamsTypeProp<TOperation extends AnyOperation> =
+export type RequestPathParamsTypeProp<TOperation extends OpenApiOperation> =
   TOperation extends {
     parameters: infer Params;
   }
@@ -140,7 +140,7 @@ export type RequestPathParamsTypeProp<TOperation extends AnyOperation> =
     : // whenever the generic isn't set
       { pathParams?: never };
 
-export type RequestPathParamsType<TOperation extends AnyOperation> =
+export type RequestPathParamsType<TOperation extends OpenApiOperation> =
   RequestPathParamsTypeProp<TOperation>['pathParams'];
 
 // Extract the parameters type for the ApiService function
