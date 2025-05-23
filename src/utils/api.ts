@@ -14,6 +14,7 @@ import {
   OperationMethodsForPath,
   PathsWithOperations,
   ApiServiceCallParams,
+  OpenApiOperationAt,
 } from '../types';
 import { paths, operations } from '../openapi_schema';
 import { config } from '../config/config';
@@ -44,36 +45,36 @@ export function createApiService<
   TPath extends PathsWithOperations,
   TMethod extends OperationMethodsForPath<TPath>,
   TResponseContentType extends ResponseContentType<
-    paths[TPath][TMethod]
-  > = ResponseContentType<paths[TPath][TMethod]>,
+    OpenApiOperationAt<TPath, TMethod>
+  > = ResponseContentType<OpenApiOperationAt<TPath, TMethod>>,
   TResponseStatusCode extends ResponseStatusCode<
-    paths[TPath][TMethod]
-  > = ResponseStatusCode<paths[TPath][TMethod]>,
+    OpenApiOperationAt<TPath, TMethod>
+  > = ResponseStatusCode<OpenApiOperationAt<TPath, TMethod>>,
   TResponseDataByStatus extends ResponseDataTypeByStatusCode<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TResponseContentType,
     TResponseStatusCode
   > = ResponseDataTypeByStatusCode<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TResponseContentType,
     TResponseStatusCode
   >,
   TResponseData extends ResponseDataType<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TResponseContentType,
     TResponseStatusCode
   > = ResponseDataType<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TResponseContentType,
     TResponseStatusCode
   >,
   TRequestContentType extends RequestContentType<
-    paths[TPath][TMethod]
-  > = RequestContentType<paths[TPath][TMethod]>,
+    OpenApiOperationAt<TPath, TMethod>
+  > = RequestContentType<OpenApiOperationAt<TPath, TMethod>>,
   TRequestData extends RequestDataType<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TRequestContentType
-  > = RequestDataType<paths[TPath][TMethod], TRequestContentType>
+  > = RequestDataType<OpenApiOperationAt<TPath, TMethod>, TRequestContentType>
 >(
   path: TPath,
   method: TMethod,
@@ -90,39 +91,32 @@ export function createApiService<
   TRequestData
 > {
   // default to find the content type from the first request content
-  if (!requestContentType) {
-    let operation = config.openapiSchema.paths[path][
-      method
-    ] as operations[keyof operations];
+  let operation = config.openapiSchema.paths[path][
+    method
+  ] as OpenApiOperationAt<TPath, TMethod>;
 
+  if (!requestContentType) {
     requestContentType = operation?.requestBody?.content
       ? (Object.keys(operation.requestBody.content)[0] as TRequestContentType)
       : null;
   }
 
-  if (!requestContentType) {
-    requestContentType = openapi_schema.paths[path][method]?.requestBody
-      ?.content
-      ? (Object.keys(
-          openapi_schema.paths[path][method].requestBody.content
-        )[0] as TRequestContentType)
-      : null;
-  }
-
   // default to find the content type from the first request content
   if (!responseContentType) {
-    responseContentType = openapi_schema.paths[path][method as string]
-      .responses[
-      Object.keys(openapi_schema.paths[path][method as string].responses)[0]
-    ]?.content
-      ? (Object.keys(
-          openapi_schema.paths[path][method as string].responses[
-            Object.keys(
-              openapi_schema.paths[path][method as string].responses
-            )[0]
-          ].content
-        )[0] as TResponseContentType)
-      : null;
+    const firstStatusCodeStr = Object.keys(operation.responses)[0];
+    const firstStatusCode = Number(
+      firstStatusCodeStr
+    ) as keyof typeof operation.responses;
+    const firstStatusCodeObject = operation.responses[firstStatusCode];
+    const firstContent = firstStatusCodeObject?.content;
+
+    if (firstContent) {
+      responseContentType = Object.keys(
+        firstContent
+      )[0] as TResponseContentType;
+    } else {
+      responseContentType = null;
+    }
   }
 
   const call = async ({
@@ -138,7 +132,10 @@ export function createApiService<
     let url: CallApiOptions<TRequestData>['url'] = path;
     if (pathParams && typeof pathParams === 'object') {
       for (const key in pathParams) {
-        url = url.replace(`{${key}}`, pathParams[key]);
+        url = url.replace(
+          `{${key}}`,
+          pathParams[key as keyof typeof pathParams]
+        );
       }
     }
 
@@ -164,20 +161,26 @@ export function createApiService<
 export function useApiCall<
   TPath extends PathsWithOperations,
   TMethod extends OperationMethodsForPath<TPath>,
-  TResponseContentType extends ResponseContentType<paths[TPath][TMethod]>,
-  TRequestContentType extends RequestContentType<paths[TPath][TMethod]>,
-  TResponseStatusCode extends ResponseStatusCode<paths[TPath][TMethod]>,
+  TResponseContentType extends ResponseContentType<
+    OpenApiOperationAt<TPath, TMethod>
+  >,
+  TRequestContentType extends RequestContentType<
+    OpenApiOperationAt<TPath, TMethod>
+  >,
+  TResponseStatusCode extends ResponseStatusCode<
+    OpenApiOperationAt<TPath, TMethod>
+  >,
   TRequestData extends RequestDataType<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TRequestContentType
   >,
   TResponseData extends ResponseDataType<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TResponseContentType,
     TResponseStatusCode
   >,
   TResponseDataByStatus extends ResponseDataTypeByStatusCode<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TResponseContentType,
     TResponseStatusCode
   >

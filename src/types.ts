@@ -15,20 +15,35 @@ export type NonNeverKeys<T> = {
   [K in keyof T]: T[K] extends never ? never : K;
 }[keyof T];
 
+// all the operations in the OpenAPI schema
 export type OpenApiOperation = operations[keyof operations];
+
+// check if a type is an OpenApiOperation
 export type IsOpenApiOperation<T> = T extends OpenApiOperation ? true : false;
 
-export type OperationKeys<T> = {
-  [K in keyof T]: IsOpenApiOperation<T[K]> extends true ? K : never;
-}[keyof T];
+// find all the keys of the object whose value is an OpenApiOperation
+export type OperationKeys<T> = Exclude<
+  {
+    [K in keyof T]: IsOpenApiOperation<T[K]> extends true ? K : never;
+  }[keyof T],
+  undefined | never
+>;
 
+// find all the paths of `paths` that have valid operations
 export type PathsWithOperations = {
   [P in keyof paths]: OperationKeys<paths[P]> extends never ? never : P;
 }[keyof paths];
 
+// find all methods of a path that produce valid operations
 export type OperationMethodsForPath<TPath extends PathsWithOperations> =
   OperationKeys<paths[TPath]>;
 
+export type OpenApiOperationAt<
+  TPath extends PathsWithOperations,
+  TMethod extends OperationMethodsForPath<TPath>
+> = Extract<paths[TPath][TMethod], OpenApiOperation>;
+
+// find the type of the content for a requestBody
 export type RequestContentType<TOperation extends OpenApiOperation> = [
   TOperation['requestBody']
 ] extends [never]
@@ -39,6 +54,7 @@ export type RequestContentType<TOperation extends OpenApiOperation> = [
   ? keyof ContentTypes
   : never;
 
+// find the type of the content for a response
 export type ResponseContentType<TOperation extends OpenApiOperation> =
   TOperation extends {
     responses: infer Responses;
@@ -52,6 +68,7 @@ export type ResponseContentType<TOperation extends OpenApiOperation> =
       }[keyof Responses]
     : never;
 
+// find the status code of a response
 export type ResponseStatusCode<TOperation extends OpenApiOperation> =
   TOperation extends {
     responses: infer Responses;
@@ -59,6 +76,7 @@ export type ResponseStatusCode<TOperation extends OpenApiOperation> =
     ? keyof Responses
     : never;
 
+// find the type of the response data for a given status code and content type
 export type ResponseDataTypeByStatusCode<
   TOperation extends OpenApiOperation,
   TResponseContentType extends ResponseContentType<TOperation> = ResponseContentType<TOperation>,
@@ -79,6 +97,7 @@ export type ResponseDataTypeByStatusCode<
     }
   : never;
 
+// find the type of the response data for a given status code and content type
 export type ResponseDataType<
   TOperation extends OpenApiOperation,
   TResponseContentType extends ResponseContentType<TOperation> = ResponseContentType<TOperation>,
@@ -90,6 +109,7 @@ export type ResponseDataType<
   >
 > = TResponseDataByStatus[keyof TResponseDataByStatus];
 
+// find the type of the request data for a given content type
 export type RequestDataTypeProp<
   TOperation extends OpenApiOperation,
   TRequestContentType extends RequestContentType<TOperation> = RequestContentType<TOperation>
@@ -143,38 +163,51 @@ export type RequestPathParamsTypeProp<TOperation extends OpenApiOperation> =
 export type RequestPathParamsType<TOperation extends OpenApiOperation> =
   RequestPathParamsTypeProp<TOperation>['pathParams'];
 
+type a = PathsWithOperations;
+type b = OperationMethodsForPath<'/divisions/'>;
+
+type c = paths['/divisions/']['get'];
+
 // Extract the parameters type for the ApiService function
 export type ApiServiceCallParams<
   TPath extends PathsWithOperations,
   TMethod extends OperationMethodsForPath<TPath>,
-  TRequestContentType extends RequestContentType<paths[TPath][TMethod]>,
+  TRequestContentType extends RequestContentType<
+    OpenApiOperationAt<TPath, TMethod>
+  >,
   TRequestData
 > = Omit<
   CallApiOptions<TRequestData>,
   'url' | 'method' | 'data' | 'params' | 'pathParams'
 > &
-  RequestDataTypeProp<paths[TPath][TMethod], TRequestContentType> &
-  RequestParamsTypeProp<paths[TPath][TMethod]> &
-  RequestPathParamsTypeProp<paths[TPath][TMethod]>;
+  RequestDataTypeProp<OpenApiOperationAt<TPath, TMethod>, TRequestContentType> &
+  RequestParamsTypeProp<OpenApiOperationAt<TPath, TMethod>> &
+  RequestPathParamsTypeProp<OpenApiOperationAt<TPath, TMethod>>;
 
 export type ApiService<
   TPath extends PathsWithOperations,
   TMethod extends OperationMethodsForPath<TPath>,
-  TResponseContentType extends ResponseContentType<paths[TPath][TMethod]>,
-  TResponseStatusCode extends ResponseStatusCode<paths[TPath][TMethod]>,
+  TResponseContentType extends ResponseContentType<
+    OpenApiOperationAt<TPath, TMethod>
+  >,
+  TResponseStatusCode extends ResponseStatusCode<
+    OpenApiOperationAt<TPath, TMethod>
+  >,
   TResponseDataByStatus extends ResponseDataTypeByStatusCode<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TResponseContentType,
     TResponseStatusCode
   >,
   TResponseDataType extends ResponseDataType<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TResponseContentType,
     TResponseStatusCode
   >,
-  TRequestContentType extends RequestContentType<paths[TPath][TMethod]>,
+  TRequestContentType extends RequestContentType<
+    OpenApiOperationAt<TPath, TMethod>
+  >,
   TRequestDataType extends RequestDataType<
-    paths[TPath][TMethod],
+    OpenApiOperationAt<TPath, TMethod>,
     TRequestContentType
   >
 > = {
