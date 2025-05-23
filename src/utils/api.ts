@@ -11,10 +11,9 @@ import {
   ApiService,
   RequestContentType,
   RequestDataType,
-  ValidMethodsForPath,
+  OperationMethodsForPath,
 } from '../types';
 import { paths, operations, components } from '../openapi_schema';
-import openapi_schema from '../../../openapi_schema.json';
 import { config } from '../config/config';
 import { BsPatchPlus } from 'react-icons/bs';
 
@@ -42,7 +41,7 @@ export async function callApi<TResponseData, TRequestData = any>({
 
 export function createApiService<
   TPath extends keyof paths,
-  TMethod extends ValidMethodsForPath<TPath> & AxiosRequestConfig['method'],
+  TMethod extends OperationMethodsForPath<TPath>,
   TResponseContentType extends ResponseContentType<
     paths[TPath][TMethod]
   > = ResponseContentType<paths[TPath][TMethod]>,
@@ -90,6 +89,16 @@ export function createApiService<
   TRequestData
 > {
   // default to find the content type from the first request content
+  if (!requestContentType) {
+    let operation = config.openapiSchema.paths[path][
+      method
+    ] as operations[keyof operations];
+
+    requestContentType = operation?.requestBody?.content
+      ? (Object.keys(operation.requestBody.content)[0] as TRequestContentType)
+      : null;
+  }
+
   if (!requestContentType) {
     requestContentType = openapi_schema.paths[path][method]?.requestBody
       ?.content

@@ -9,7 +9,11 @@ export const getTeams = createApiService('/teams/', 'get');
 export const getTeamById = createApiService('/teams/{team_id}', 'get');
 export const getGames = createApiService('/games/', 'get');
 export const getGameById = createApiService('/games/{game_id}', 'get');
-export const postGameScore = createApiService('/games/{game_id}/score', 'post');
+export const patchGameScore = createApiService(
+  '/games/{game_id}/score',
+  'patch'
+);
+
 export const assignMatchups = createApiService(
   '/games/assign-matchups',
   'post'

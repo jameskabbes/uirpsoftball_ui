@@ -126,14 +126,17 @@ function loadFrontendConfig(): FrontendConfig {
 
 const frontendConfig = loadFrontendConfig();
 
+const openapiSchemaPath = convertEnvPathToAbsolute(
+  process.cwd(),
+  frontendConfig.OPENAPI_SCHEMA_PATH
+);
+
 export const importedConfig: Config = {
   backendUrl: sharedConfig.BACKEND_URL,
   frontendUrl: sharedConfig.FRONTEND_URL,
   vite: frontendConfig.VITE,
-  openapiSchemaPath: convertEnvPathToAbsolute(
-    process.cwd(),
-    frontendConfig.OPENAPI_SCHEMA_PATH
-  ),
+  openapiSchemaPath: openapiSchemaPath,
+  openapiSchema: JSON.parse(openapiSchemaPath),
   unknownColor: frontendConfig.UNKNOWN_COLOR,
   defaultNGamesPerRound: frontendConfig.DEFAULT_N_GAMES_PER_ROUND,
   defaultNRounds: frontendConfig.DEFAULT_N_ROUNDS,

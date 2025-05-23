@@ -15,34 +15,52 @@ export type NonNeverKeys<T> = {
   [K in keyof T]: T[K] extends never ? never : K;
 }[keyof T];
 
-export type RequestContentType<TOperation> = TOperation extends {
-  requestBody:
-    | { content: infer ContentTypes }
-    | { content?: infer ContentTypes };
-}
+export type AnyOperation = operations[keyof operations];
+export type IsOperation<T> = T extends AnyOperation ? true : false;
+
+export type OperationKeys<T> = {
+  [K in keyof T]: IsOperation<T[K]> extends true ? K : never;
+}[keyof T];
+
+export type PathsWithOperations = {
+  [P in keyof paths]: OperationKeys<paths[P]> extends never ? never : P;
+}[keyof paths];
+
+export type OperationMethodsForPath<TPath extends PathsWithOperations> =
+  OperationKeys<paths[TPath]>;
+
+export type RequestContentType<TOperation extends AnyOperation> = [
+  TOperation['requestBody']
+] extends [never]
+  ? never
+  : TOperation['requestBody'] extends { content: infer ContentTypes }
+  ? keyof ContentTypes
+  : TOperation['requestBody'] extends { content?: infer ContentTypes }
   ? keyof ContentTypes
   : never;
 
-export type ResponseContentType<TOperation> = TOperation extends {
-  responses: infer Responses;
-}
-  ? {
-      [StatusCode in keyof Responses]: Responses[StatusCode] extends {
-        content: infer ContentTypes;
-      }
-        ? keyof ContentTypes
-        : never;
-    }[keyof Responses]
-  : never;
+export type ResponseContentType<TOperation extends AnyOperation> =
+  TOperation extends {
+    responses: infer Responses;
+  }
+    ? {
+        [StatusCode in keyof Responses]: Responses[StatusCode] extends {
+          content: infer ContentTypes;
+        }
+          ? keyof ContentTypes
+          : never;
+      }[keyof Responses]
+    : never;
 
-export type ResponseStatusCode<TOperation> = TOperation extends {
-  responses: infer Responses;
-}
-  ? keyof Responses
-  : never;
+export type ResponseStatusCode<TOperation extends AnyOperation> =
+  TOperation extends {
+    responses: infer Responses;
+  }
+    ? keyof Responses
+    : never;
 
 export type ResponseDataTypeByStatusCode<
-  TOperation,
+  TOperation extends AnyOperation,
   TResponseContentType extends ResponseContentType<TOperation> = ResponseContentType<TOperation>,
   TResponseStatusCode extends ResponseStatusCode<TOperation> = ResponseStatusCode<TOperation>
 > = TOperation extends {
@@ -62,7 +80,7 @@ export type ResponseDataTypeByStatusCode<
   : never;
 
 export type ResponseDataType<
-  TOperation,
+  TOperation extends AnyOperation,
   TResponseContentType extends ResponseContentType<TOperation> = ResponseContentType<TOperation>,
   TResponseStatusCode extends ResponseStatusCode<TOperation> = ResponseStatusCode<TOperation>,
   TResponseDataByStatus = ResponseDataTypeByStatusCode<
@@ -73,7 +91,7 @@ export type ResponseDataType<
 > = TResponseDataByStatus[keyof TResponseDataByStatus];
 
 export type RequestDataTypeProp<
-  TOperation,
+  TOperation extends AnyOperation,
   TRequestContentType extends RequestContentType<TOperation> = RequestContentType<TOperation>
 > = TOperation extends {
   requestBody: infer RequestBody;
@@ -92,7 +110,7 @@ export type RequestDataTypeProp<
   : { data?: never };
 
 export type RequestDataType<
-  TOperation,
+  TOperation extends AnyOperation,
   TRequestContentType extends RequestContentType<TOperation> = RequestContentType<TOperation>
 > = RequestDataTypeProp<TOperation, TRequestContentType>['data'];
 
@@ -107,27 +125,28 @@ export type RequestParamsTypeProp<TOperation> = TOperation extends {
   : // whenever the generic isn't set
     { params?: never };
 
-export type RequestParamsType<TOperation> =
+export type RequestParamsType<TOperation extends AnyOperation> =
   RequestParamsTypeProp<TOperation>['params'];
 
-export type RequestPathParamsTypeProp<TOperation> = TOperation extends {
-  parameters: infer Params;
-}
-  ? Params extends { path: infer U }
-    ? { pathParams: U }
-    : Params extends { path?: infer U }
-    ? { pathParams?: U }
-    : { pathParams?: never }
-  : // whenever the generic isn't set
-    { pathParams?: never };
+export type RequestPathParamsTypeProp<TOperation extends AnyOperation> =
+  TOperation extends {
+    parameters: infer Params;
+  }
+    ? Params extends { path: infer U }
+      ? { pathParams: U }
+      : Params extends { path?: infer U }
+      ? { pathParams?: U }
+      : { pathParams?: never }
+    : // whenever the generic isn't set
+      { pathParams?: never };
 
-export type RequestPathParamsType<TOperation> =
+export type RequestPathParamsType<TOperation extends AnyOperation> =
   RequestPathParamsTypeProp<TOperation>['pathParams'];
 
 // Extract the parameters type for the ApiService function
 export type ApiServiceCallParams<
-  TPath extends keyof paths,
-  TMethod extends keyof paths[TPath],
+  TPath extends PathsWithOperations,
+  TMethod extends OperationMethodsForPath<TPath>,
   TRequestContentType extends RequestContentType<paths[TPath][TMethod]>,
   TRequestData
 > = Omit<
@@ -139,7 +158,7 @@ export type ApiServiceCallParams<
   RequestPathParamsTypeProp<paths[TPath][TMethod]>;
 
 export type ApiService<
-  TPath extends keyof paths,
+  TPath extends PathsWithOperations,
   TMethod extends keyof paths[TPath],
   TResponseContentType extends ResponseContentType<paths[TPath][TMethod]>,
   TResponseStatusCode extends ResponseStatusCode<paths[TPath][TMethod]>,
@@ -169,10 +188,6 @@ export type ApiService<
   ) => Promise<AxiosResponse<TResponseDataType>>;
   responses: TResponseDataByStatus;
 };
-
-export type ValidMethodsForPath<TPath extends keyof paths> = NonNeverKeys<
-  paths[TPath]
->;
 
 export interface CallApiOptions<TRequestData>
   extends AxiosRequestConfig<TRequestData> {
@@ -212,15 +227,21 @@ export interface FrontendConfig {
   DEFAULT_N_DIVISIONS_PER_GAME: number;
 }
 
+export interface OpenapiSchema {
+  paths: paths;
+  components: components;
+}
+
 export interface Config {
   backendUrl: string;
   frontendUrl: string;
   vite: ViteConfig;
-  openapiSchemaPath: string;
   unknownColor: string;
   defaultNGamesPerRound: number;
   defaultNRounds: number;
   defaultNDivisions: number;
   defaultNTeamsPerDivision: number;
   defaultNDivisionsPerGame: number;
+  openapiSchemaPath: string;
+  openapiSchema: OpenapiSchema;
 }
