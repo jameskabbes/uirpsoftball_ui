@@ -1,4 +1,9 @@
-import { Config, SharedConfig, FrontendConfig } from './src/types';
+import {
+  Config,
+  SharedConfig,
+  FrontendConfig,
+  OpenapiSchema,
+} from './src/types';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import path from 'path';
@@ -131,12 +136,16 @@ const openapiSchemaPath = convertEnvPathToAbsolute(
   frontendConfig.OPENAPI_SCHEMA_PATH
 );
 
+const openapiSchema: OpenapiSchema = JSON.parse(
+  fs.readFileSync(openapiSchemaPath, 'utf8')
+);
+
 export const importedConfig: Config = {
   backendUrl: sharedConfig.BACKEND_URL,
   frontendUrl: sharedConfig.FRONTEND_URL,
   vite: frontendConfig.VITE,
   openapiSchemaPath: openapiSchemaPath,
-  openapiSchema: JSON.parse(openapiSchemaPath),
+  openapiSchema: openapiSchema,
   unknownColor: frontendConfig.UNKNOWN_COLOR,
   defaultNGamesPerRound: frontendConfig.DEFAULT_N_GAMES_PER_ROUND,
   defaultNRounds: frontendConfig.DEFAULT_N_ROUNDS,

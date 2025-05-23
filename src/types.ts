@@ -11,10 +11,6 @@ export type FirstKey<T> = keyof {
   ? keyof O
   : never;
 
-export type NonNeverKeys<T> = {
-  [K in keyof T]: T[K] extends never ? never : K;
-}[keyof T];
-
 // all the operations in the OpenAPI schema
 export type OpenApiOperation = operations[keyof operations];
 
@@ -219,8 +215,21 @@ export type ApiService<
       TRequestDataType
     >
   ) => Promise<AxiosResponse<TResponseDataType>>;
-  responses: TResponseDataByStatus;
 };
+
+// Utility type to extract TResponseDataByStatus from ApiService
+export type ApiServiceResponseDataByStatus<T = any> = T extends ApiService<
+  PathsWithOperations, // TPath
+  OperationMethodsForPath<PathsWithOperations>, // TMethod
+  any, // TResponseContentType
+  any, // TResponseStatusCode
+  infer TResponseDataByStatus, // <-- This is what we want
+  unknown, // TResponseData
+  never, // TRequestContentType
+  never // TRequestData
+>
+  ? TResponseDataByStatus
+  : never;
 
 export interface CallApiOptions<TRequestData>
   extends AxiosRequestConfig<TRequestData> {
@@ -228,10 +237,17 @@ export interface CallApiOptions<TRequestData>
   method: AxiosRequestConfig<TRequestData>['method'];
 }
 
-export interface UseApiCallReturn<T> extends AxiosResponse<T> {
+// Make all AxiosResponse fields optional and possibly undefined
+type PartialAxiosResponse<T> = {
+  [K in keyof AxiosResponse<T>]?: AxiosResponse<T>[K];
+};
+
+export interface UseApiCallReturn<TData>
+  extends PartialAxiosResponse<TData | null> {
   loading: boolean;
   refetch: () => void;
 }
+
 export interface DarkModeContextData {
   darkMode: boolean;
   toggleDarkMode: () => void;
@@ -278,3 +294,16 @@ export interface Config {
   openapiSchemaPath: string;
   openapiSchema: OpenapiSchema;
 }
+
+export type GameExportById = Record<
+  components['schemas']['GameExport']['id'],
+  components['schemas']['GameExport']
+>;
+export type LocationExportById = Record<
+  components['schemas']['LocationExport']['id'],
+  components['schemas']['LocationExport']
+>;
+export type TeamExportById = Record<
+  components['schemas']['TeamExport']['id'],
+  components['schemas']['TeamExport']
+>;

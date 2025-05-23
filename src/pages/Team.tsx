@@ -9,7 +9,7 @@ import { CardPreview } from '../components/Game/CardPreview';
 import { DivisionCard } from '../components/Standings/DivisionCard';
 import { Panels } from '../components/Schedule/Team';
 import { getTeamPage } from '../services/apiServices';
-import { stat } from 'fs';
+import { ApiServiceResponseDataByStatus } from '../types';
 
 function Team() {
   const teamSlug = useParams()
@@ -22,91 +22,92 @@ function Team() {
   });
 
   useEffect(() => {
-    if (data !== null && data !== undefined) {
-      const apiData = data as (typeof getTeamPage.responses)['200'];
-      document.title = apiData?.teams[apiData.team_id]?.name ?? 'Team';
+    if (data !== undefined) {
+      if (status === 200) {
+        const apiData = data as ApiServiceResponseDataByStatus<
+          typeof getTeamPage
+        >['200'];
+        document.title = apiData?.teams[apiData.team_id]?.name ?? 'Team';
+      } else if (status === 404) {
+        document.title = 'Team Not Found';
+      }
     } else {
       document.title = 'Team';
     }
-  }, [data]);
+  }, [data, status]);
 
   if (status === 404) {
     return <NotFound />;
-  } else if (loading || (status == 200 && data !== null)) {
-    data as (typeof getTeamPage.responses)['200'];
-  return (
-    <>
-      <div className="page">
-        <div className="centered-page-content">
-          <div className="flex flex-col items-center mt-4">
-            <h1 className="text-center">
-              <DotAndName
-                team={data === null ? null : data?.teams[data?.team_id]}
-              />
-            </h1>
-          </div>
-          {/* once loading is done, only render if featuredGameId is not null */}
-          {(data === null ||
-            (data !== null && data.featured_game_id !== null)) && (
-            <>
-              <GameLink
-                game={
-                  data === null || data.featured_game_id === null
-                    ? null
-                    : data.games[data.featured_game_id]
+  } else if (data === undefined || status == 200) {
+    const apiData = data as ApiServiceResponseDataByStatus<
+      typeof getTeamPage
+    >['200'];
+    return (
+      <>
+        <div className="page">
+          <div className="centered-page-content">
+            <div className="flex flex-col items-center mt-4">
+              <h1 className="text-center">
+                <DotAndName
+                  team={
+                    apiData === undefined
+                      ? null
+                      : apiData.teams[apiData.team_id]
+                  }
+                />
+              </h1>
+            </div>
+            {/* once loading is done, only render if featuredGameId is not null */}
+            {(() => {
+              if (apiData !== undefined && apiData.featured_game_id !== null) {
+                const featuredGame = apiData.games[apiData.featured_game_id];
+                if (featuredGame && featuredGame.location_id != null) {
+                  return (
+                    <GameLink game={featuredGame}>
+                      <div className="max-w-lg mx-auto mt-8">
+                        <CardPreview
+                          data={{
+                            game: featuredGame,
+                            teams: apiData.teams,
+                            location:
+                              apiData.locations[featuredGame.location_id],
+                          }}
+                        />
+                      </div>
+                    </GameLink>
+                  );
                 }
-              >
-                <div className="max-w-lg mx-auto mt-8">
-                  {data !== null && data.featured_game_id !== null && (
-                    <CardPreview
-                      data={{
-                        game: data.games[data.featured_game_id],
-                        teams: data.teams,
-                        location:
-                          data.locations[
-                            data.games[data.featured_game_id].location_id
-                          ],
-                      }}
-                    />
-                  )}
-                </div>
-              </GameLink>
-            </>
-          )}
-          <div className="mt-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto gap-4">
-              <DivisionCard
-                data={
-                  data === null
-                    ? null
-                    : {
-                        division: data.division,
-                        standings: data.standings,
-                        teams: data.teams,
-                        teamIdsToBold: new Set([data.team_id]),
-                      }
-                }
-              />
-              <Panels
-                data={
-                  data === null
-                    ? null
-                    : {
-                        game_known_ids: data.games_known_ids,
-                        game_tbd_ids: data.games_tbd_ids,
-                        games: data.games,
-                        scores: data.scores,
-                        teams: data.teams,
-                        locations: data.locations,
-                      }
-                }
-              />
+              }
+              return null;
+            })()}
+            <div className="mt-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto gap-4">
+                <DivisionCard
+                  data={
+                    apiData !== undefined && {
+                      division: apiData.division,
+                      teams: apiData.teams,
+                      teamIdsToBold: new Set([apiData.team_id]),
+                    }
+                  }
+                />
+                <Panels
+                  data={
+                    apiData !== undefined && {
+                      game_known_ids: apiData.games_known_ids,
+                      game_tbd_ids: apiData.games_tbd_ids,
+                      games: apiData.games,
+                      teams: apiData.teams,
+                      locations: apiData.locations,
+                    }
+                  }
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </>
-  );
+      </>
+    );
+  }
 }
-
 export { Team };

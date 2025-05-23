@@ -16,7 +16,6 @@ import {
   ApiServiceCallParams,
   OpenApiOperationAt,
 } from '../types';
-import { paths, operations } from '../openapi_schema';
 import { config } from '../config/config';
 
 export async function callApi<TResponseData, TRequestData = any>({
@@ -43,7 +42,7 @@ export async function callApi<TResponseData, TRequestData = any>({
 
 export function createApiService<
   TPath extends PathsWithOperations,
-  TMethod extends OperationMethodsForPath<TPath>,
+  TMethod extends OperationMethodsForPath<TPath> & AxiosRequestConfig['method'],
   TResponseContentType extends ResponseContentType<
     OpenApiOperationAt<TPath, TMethod>
   > = ResponseContentType<OpenApiOperationAt<TPath, TMethod>>,
@@ -154,7 +153,6 @@ export function createApiService<
 
   return {
     call,
-    responses: null,
   };
 }
 
@@ -204,12 +202,13 @@ export function useApiCall<
   dependencies: any[] = []
 ): UseApiCallReturn<TResponseData> {
   const [loading, setLoading] = useState<boolean>(true);
-  const [response, setResponse] = useState<AxiosResponse<TResponseData>>(null);
+  const [response, setResponse] = useState<
+    AxiosResponse<TResponseData> | undefined
+  >(undefined);
 
   async function refetch() {
     setLoading(true);
-    const b = await apiService.call(apiServiceOptions);
-    setResponse(b);
+    setResponse(await apiService.call(apiServiceOptions));
     setLoading(false);
   }
 
