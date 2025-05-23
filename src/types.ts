@@ -159,7 +159,7 @@ export type ApiServiceCallParams<
 
 export type ApiService<
   TPath extends PathsWithOperations,
-  TMethod extends keyof paths[TPath],
+  TMethod extends OperationMethodsForPath<TPath>,
   TResponseContentType extends ResponseContentType<paths[TPath][TMethod]>,
   TResponseStatusCode extends ResponseStatusCode<paths[TPath][TMethod]>,
   TResponseDataByStatus extends ResponseDataTypeByStatusCode<
