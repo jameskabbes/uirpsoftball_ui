@@ -12,8 +12,13 @@ import { getTeamPage } from '../services/apiServices';
 import { ApiServiceResponseDataByStatus } from '../types';
 
 function Team() {
-  const teamSlug = useParams()
-    .teamSlug as components['schemas']['TeamExport']['slug'];
+  const teamSlug = useParams().teamSlug as
+    | components['schemas']['TeamExport']['slug']
+    | undefined;
+
+  if (teamSlug === undefined) {
+    return <NotFound />;
+  }
 
   const { data, loading, status, refetch } = useApiCall(getTeamPage, {
     pathParams: {
@@ -82,7 +87,7 @@ function Team() {
             })()}
             <div className="mt-8">
               <div className="grid grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto gap-4">
-                <DivisionCard
+                {/* <DivisionCard
                   data={
                     apiData !== undefined && {
                       division: apiData.division,
@@ -101,7 +106,7 @@ function Team() {
                       locations: apiData.locations,
                     }
                   }
-                />
+                /> */}
               </div>
             </div>
           </div>

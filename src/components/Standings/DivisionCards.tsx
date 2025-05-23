@@ -6,20 +6,20 @@ import { paths, operations, components } from '../../openapi_schema';
 
 interface DataProps {
   divisions: Record<
-    components['schemas']['DivisionID'],
-    components['schemas']['Division']
+    components['schemas']['DivisionExport']['id'],
+    components['schemas']['DivisionExport']
   >;
-  division_ids_ordered: components['schemas']['DivisionID'][];
+  division_ids_ordered: components['schemas']['DivisionExport']['id'][];
   standings_by_division_id: Record<
-    components['schemas']['DivisionID'],
-    components['schemas']['Standing'][]
+    components['schemas']['DivisionExport']['id'],
+    components['schemas']['TeamExport'][]
   >;
   teams: Record<components['schemas']['TeamID'], components['schemas']['Team']>;
   game?: components['schemas']['Game-Input'];
 }
 
 interface Props {
-  data: DataProps | null;
+  data: DataProps | undefined;
 }
 
 function DivisionCards({ data }: Props) {

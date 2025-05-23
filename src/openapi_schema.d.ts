@@ -21,7 +21,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/divisions/{division_id}": {
+    "/divisions/{division_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -29,7 +29,7 @@ export interface paths {
             cookie?: never;
         };
         /** By Id */
-        get: operations["by_id_divisions__division_id__get"];
+        get: operations["by_id_divisions__division_id___get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -55,7 +55,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/teams/{team_id}": {
+    "/teams/{team_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -63,7 +63,7 @@ export interface paths {
             cookie?: never;
         };
         /** By Id */
-        get: operations["by_id_teams__team_id__get"];
+        get: operations["by_id_teams__team_id___get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -89,7 +89,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/games/{game_id}": {
+    "/games/{game_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -97,7 +97,7 @@ export interface paths {
             cookie?: never;
         };
         /** By Id */
-        get: operations["by_id_games__game_id__get"];
+        get: operations["by_id_games__game_id___get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -106,7 +106,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/games/{game_id}/score": {
+    "/games/{game_id}/score/": {
         parameters: {
             query?: never;
             header?: never;
@@ -120,10 +120,10 @@ export interface paths {
         options?: never;
         head?: never;
         /** Update Score */
-        patch: operations["update_score_games__game_id__score_patch"];
+        patch: operations["update_score_games__game_id__score__patch"];
         trace?: never;
     };
-    "/games/assign-matchups": {
+    "/games/assign-matchups/": {
         parameters: {
             query?: never;
             header?: never;
@@ -133,14 +133,14 @@ export interface paths {
         get?: never;
         put?: never;
         /** Assign Matchups */
-        post: operations["assign_matchups_games_assign_matchups_post"];
+        post: operations["assign_matchups_games_assign_matchups__post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/games/reprocess-all-scores": {
+    "/games/reprocess-all-scores/": {
         parameters: {
             query?: never;
             header?: never;
@@ -150,7 +150,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** Reprocess All Scores */
-        post: operations["reprocess_all_scores_games_reprocess_all_scores_post"];
+        post: operations["reprocess_all_scores_games_reprocess_all_scores__post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -174,7 +174,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/locations/{location_id}": {
+    "/locations/{location_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -182,7 +182,7 @@ export interface paths {
             cookie?: never;
         };
         /** By Id */
-        get: operations["by_id_locations__location_id__get"];
+        get: operations["by_id_locations__location_id___get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -208,7 +208,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/seeding-parameters/{seeding_parameter_id}": {
+    "/seeding-parameters/{seeding_parameter_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -216,7 +216,7 @@ export interface paths {
             cookie?: never;
         };
         /** By Id */
-        get: operations["by_id_seeding_parameters__seeding_parameter_id__get"];
+        get: operations["by_id_seeding_parameters__seeding_parameter_id___get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -242,7 +242,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tournaments/{tournament_id}": {
+    "/tournaments/{tournament_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -250,7 +250,7 @@ export interface paths {
             cookie?: never;
         };
         /** By Id */
-        get: operations["by_id_tournaments__tournament_id__get"];
+        get: operations["by_id_tournaments__tournament_id___get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -276,7 +276,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tournament-games/{tournament_game_id}": {
+    "/tournament-games/{tournament_game_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -284,7 +284,7 @@ export interface paths {
             cookie?: never;
         };
         /** By Id */
-        get: operations["by_id_tournament_games__tournament_game_id__get"];
+        get: operations["by_id_tournament_games__tournament_game_id___get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -310,7 +310,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/visits/{visit_id}": {
+    "/visits/{visit_id}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -318,7 +318,7 @@ export interface paths {
             cookie?: never;
         };
         /** By Id */
-        get: operations["by_id_visits__visit_id__get"];
+        get: operations["by_id_visits__visit_id___get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -344,7 +344,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/pages/team/{team_slug}": {
+    "/pages/team/{team_slug}/": {
         parameters: {
             query?: never;
             header?: never;
@@ -352,7 +352,58 @@ export interface paths {
             cookie?: never;
         };
         /** Team */
-        get: operations["team_pages_team__team_slug__get"];
+        get: operations["team_pages_team__team_slug___get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pages/schedule/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Schedule */
+        get: operations["schedule_pages_schedule__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pages/game/{game_id}/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Game */
+        get: operations["game_pages_game__game_id___get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pages/standings/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Standings */
+        get: operations["standings_pages_standings__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -398,10 +449,49 @@ export interface components {
             /** Away Team Score */
             away_team_score: number | null;
         };
+        /** GameIdsAndRounds */
+        GameIdsAndRounds: {
+            /** Round */
+            round: number;
+            /** Game Ids */
+            game_ids: number[];
+        };
+        /** GameResponse */
+        GameResponse: {
+            game: components["schemas"]["GameExport"];
+            /** Teams */
+            teams: {
+                [key: string]: components["schemas"]["TeamExport"];
+            };
+            location: components["schemas"]["LocationExport"] | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
+        };
+        /** HomeResponse */
+        HomeResponse: {
+            /** Games */
+            games: {
+                [key: string]: components["schemas"]["GameExport"];
+            };
+            /** Teams */
+            teams: {
+                [key: string]: components["schemas"]["TeamExport"];
+            };
+            /** Locations */
+            locations: {
+                [key: string]: components["schemas"]["LocationExport"];
+            };
+            /** Game Ids And Rounds */
+            game_ids_and_rounds: components["schemas"]["GameIdsAndRounds"][];
+            /** Divisions */
+            divisions: {
+                [key: string]: components["schemas"]["DivisionExport"];
+            };
+            /** Division Ids Ordered */
+            division_ids_ordered: number[];
         };
         /** LocationExport */
         LocationExport: {
@@ -415,6 +505,23 @@ export interface components {
             short_name: string;
             /** Time Zone */
             time_zone: string;
+        };
+        /** ScheduleResponse */
+        ScheduleResponse: {
+            /** Games */
+            games: {
+                [key: string]: components["schemas"]["GameExport"];
+            };
+            /** Teams */
+            teams: {
+                [key: string]: components["schemas"]["TeamExport"];
+            };
+            /** Locations */
+            locations: {
+                [key: string]: components["schemas"]["LocationExport"];
+            };
+            /** Tournaments */
+            tournaments: components["schemas"]["TournamentExport"][];
         };
         /** ScoreUpdate */
         ScoreUpdate: {
@@ -431,6 +538,13 @@ export interface components {
             parameter: string;
             /** Name */
             name: string;
+        };
+        /** StandingsResponse */
+        StandingsResponse: {
+            /** Teams */
+            teams: {
+                [key: string]: components["schemas"]["TeamExport"];
+            };
         };
         /** TeamExport */
         TeamExport: {
@@ -555,7 +669,7 @@ export interface operations {
             };
         };
     };
-    by_id_divisions__division_id__get: {
+    by_id_divisions__division_id___get: {
         parameters: {
             query?: never;
             header?: never;
@@ -620,7 +734,7 @@ export interface operations {
             };
         };
     };
-    by_id_teams__team_id__get: {
+    by_id_teams__team_id___get: {
         parameters: {
             query?: never;
             header?: never;
@@ -685,7 +799,7 @@ export interface operations {
             };
         };
     };
-    by_id_games__game_id__get: {
+    by_id_games__game_id___get: {
         parameters: {
             query?: never;
             header?: never;
@@ -716,7 +830,7 @@ export interface operations {
             };
         };
     };
-    update_score_games__game_id__score_patch: {
+    update_score_games__game_id__score__patch: {
         parameters: {
             query?: never;
             header?: never;
@@ -751,7 +865,7 @@ export interface operations {
             };
         };
     };
-    assign_matchups_games_assign_matchups_post: {
+    assign_matchups_games_assign_matchups__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -771,7 +885,7 @@ export interface operations {
             };
         };
     };
-    reprocess_all_scores_games_reprocess_all_scores_post: {
+    reprocess_all_scores_games_reprocess_all_scores__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -825,7 +939,7 @@ export interface operations {
             };
         };
     };
-    by_id_locations__location_id__get: {
+    by_id_locations__location_id___get: {
         parameters: {
             query?: never;
             header?: never;
@@ -890,7 +1004,7 @@ export interface operations {
             };
         };
     };
-    by_id_seeding_parameters__seeding_parameter_id__get: {
+    by_id_seeding_parameters__seeding_parameter_id___get: {
         parameters: {
             query?: never;
             header?: never;
@@ -955,7 +1069,7 @@ export interface operations {
             };
         };
     };
-    by_id_tournaments__tournament_id__get: {
+    by_id_tournaments__tournament_id___get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1020,7 +1134,7 @@ export interface operations {
             };
         };
     };
-    by_id_tournament_games__tournament_game_id__get: {
+    by_id_tournament_games__tournament_game_id___get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1085,7 +1199,7 @@ export interface operations {
             };
         };
     };
-    by_id_visits__visit_id__get: {
+    by_id_visits__visit_id___get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1131,12 +1245,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["HomeResponse"];
                 };
             };
         };
     };
-    team_pages_team__team_slug__get: {
+    team_pages_team__team_slug___get: {
         parameters: {
             query?: never;
             header?: never;
@@ -1163,6 +1277,77 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    schedule_pages_schedule__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScheduleResponse"];
+                };
+            };
+        };
+    };
+    game_pages_game__game_id___get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                game_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GameResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    standings_pages_standings__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StandingsResponse"];
                 };
             };
         };

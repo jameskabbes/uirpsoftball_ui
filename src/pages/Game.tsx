@@ -1,24 +1,36 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { callApi, useApiData } from '../utils/api';
-import { getPageTitle } from '../components/Game/getPageTitle';
+import { callApi, useApiCall } from '../utils/api';
 import { NotFound } from '../components/Game/NotFound';
 import { paths, operations, components } from '../openapi_schema';
 
 import { Card } from '../components/Game/Card';
 import { DivisionCards } from '../components/Standings/DivisionCards';
-
-const API_PATH = '/pages/game/{game_id}';
+import { getGamePage, patchGameScore } from '../services/apiServices';
+import { ApiServiceResponseDataByStatus } from '../types';
 
 function Game() {
-  const { gameId } = useParams();
-  const [data, setData, loading, setLoading, status, setStatus] = useApiData<
-    paths[typeof API_PATH]['get']['responses']['200']['content']['application/json']
-  >(API_PATH.replace('{game_id}', gameId));
+  const gameIdParam = useParams().gameId;
+
+  if (gameIdParam === undefined) {
+    return <NotFound />;
+  }
+  const gameId = Number(
+    gameIdParam
+  ) as components['schemas']['GameExport']['id'];
+
+  const { data, loading, status, refetch } = useApiCall(getGamePage, {
+    pathParams: {
+      game_id: gameId,
+    },
+  });
 
   useEffect(() => {
-    if (data !== null) {
-      document.title = getPageTitle(data.game);
+    if (data !== undefined && status === 200) {
+      const apiData = data as ApiServiceResponseDataByStatus<
+        typeof getGamePage
+      >['200'];
+      document.title = 'Game ' + apiData.game.id;
     } else {
       document.title = 'Game';
     }
@@ -26,15 +38,18 @@ function Game() {
 
   async function submitScore(home: number, away: number) {
     try {
-      const response = await callApi<
-        paths[typeof API_PATH]['get']['responses']['200']['content']['application/json']
-      >('/game/' + gameId + '/score', 'POST', {
-        home: home,
-        away: away,
-        game_id: gameId,
+      const response = await patchGameScore.call({
+        data: {
+          home_team_score: home,
+          away_team_score: away,
+        },
+        pathParams: {
+          game_id: gameId,
+        },
       });
-      setData(response.data);
-      setStatus(response.status);
+      if (response.status === 200) {
+        refetch();
+      }
     } catch (error) {
       console.error(error);
     }
@@ -42,7 +57,10 @@ function Game() {
 
   if (status === 404) {
     return <NotFound />;
-  } else {
+  } else if (data === undefined || status == 200) {
+    const apiData = data as ApiServiceResponseDataByStatus<
+      typeof getGamePage
+    >['200'];
     return (
       <>
         <div className="page">
@@ -50,33 +68,33 @@ function Game() {
             <div className="max-w-2xl mx-auto">
               <Card
                 data={
-                  data === null
-                    ? null
+                  apiData === undefined
+                    ? undefined
                     : {
-                        game: data.game,
-                        score: data.score,
-                        teams: data.teams,
-                        location: data.location,
+                        game: apiData.game,
+                        teams: apiData.teams,
+                        location: apiData.location,
                       }
                 }
                 submitScore={submitScore}
               />
             </div>
-            <div className="mt-8">
+            {/* <div className="mt-8">
               <DivisionCards
                 data={
-                  data === null
-                    ? null
+                  apiData === undefined
+                    ? undefined
                     : {
-                        divisions: data.divisions,
-                        division_ids_ordered: data.division_ids_ordered,
-                        standings_by_division_id: data.standings_by_division_id,
-                        teams: data.teams,
-                        game: data.game,
+                        divisions: apiData.divisions,
+                        division_ids_ordered: apiData.division_ids_ordered,
+                        standings_by_division_id:
+                          apiData.standings_by_division_id,
+                        teams: apiData.teams,
+                        game: apiData.game,
                       }
                 }
               />
-            </div>
+            </div> */}
           </div>
         </div>
       </>

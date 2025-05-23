@@ -7,12 +7,12 @@ import { paths, operations, components } from '../../openapi_schema';
 
 type ScheduleAggregator = components['schemas']['ScheduleAggregator'];
 interface DataProps extends ScheduleAggregator {
-  game_ids: components['schemas']['GameID'][];
+  game_ids: components['schemas']['GameExport']['id'][];
 }
 
 interface Props {
-  data: DataProps | null;
-  roundId: components['schemas']['RoundID'];
+  data: DataProps | undefined;
+  roundId: components['schemas']['GameExport']['round_id'];
   admin?: boolean;
   includeLink?: boolean;
 }
