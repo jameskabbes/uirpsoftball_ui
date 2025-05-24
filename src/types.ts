@@ -242,8 +242,7 @@ type PartialAxiosResponse<T> = {
   [K in keyof AxiosResponse<T>]?: AxiosResponse<T>[K];
 };
 
-export interface UseApiCallReturn<TData>
-  extends PartialAxiosResponse<TData | null> {
+export interface UseApiCallReturn<TData> extends PartialAxiosResponse<TData> {
   loading: boolean;
   refetch: () => void;
 }
@@ -295,15 +294,15 @@ export interface Config {
   openapiSchema: OpenapiSchema;
 }
 
-export type GameExportById = Record<
+export type GameExportsById = Record<
   components['schemas']['GameExport']['id'],
-  components['schemas']['GameExport']
+  components['schemas']['GameExport'] | undefined
 >;
-export type LocationExportById = Record<
+export type LocationExportsById = Record<
   components['schemas']['LocationExport']['id'],
-  components['schemas']['LocationExport']
+  components['schemas']['LocationExport'] | undefined
 >;
-export type TeamExportById = Record<
+export type TeamExportsById = Record<
   components['schemas']['TeamExport']['id'],
-  components['schemas']['TeamExport']
+  components['schemas']['TeamExport'] | undefined
 >;

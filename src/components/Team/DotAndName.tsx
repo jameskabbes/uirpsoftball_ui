@@ -3,14 +3,14 @@ import { Dot as TeamDot } from './Dot';
 import { paths, operations, components } from '../../openapi_schema';
 
 interface Props {
-  team: components['schemas']['Team'] | null;
+  team: components['schemas']['TeamExport'] | undefined;
 }
 
 function DotAndName({ team }: Props) {
   return (
     <span>
       <TeamDot team={team} style={{ marginRight: '0.25em' }} />
-      {team === null ? 'Team' : team.name}
+      {team === undefined ? 'Team' : team.name}
     </span>
   );
 }

@@ -6,26 +6,25 @@ import { DotAndName } from '../Team/DotAndName';
 import { Link } from '../Game/Link';
 
 interface DataProps {
-  tournament: components['schemas']['Tournament'];
+  tournament: components['schemas']['TournamentExport'];
   tournament_games: Record<
     number,
     Record<
-      components['schemas']['RoundID'],
-      components['schemas']['TournamentGame'][]
+      components['schemas']['GameExport']['round_id'],
+      components['schemas']['TournamentGameExport'][]
     >
   >;
   games: Record<
-    components['schemas']['GameID'],
-    components['schemas']['Game-Input']
+    components['schemas']['GameExport']['id'],
+    components['schemas']['GameExport']
   >;
-  teams: Record<components['schemas']['TeamID'], components['schemas']['Team']>;
-  scores: Record<
-    components['schemas']['GameID'],
-    components['schemas']['Score']
+  teams: Record<
+    components['schemas']['TeamExport']['id'],
+    components['schemas']['TeamExport']
   >;
   locations: Record<
-    components['schemas']['LocationID'],
-    components['schemas']['Location']
+    components['schemas']['LocationExport']['id'],
+    components['schemas']['LocationExport']
   >;
 }
 

@@ -14,6 +14,11 @@ export const patchGameScore = createApiService(
   'patch'
 );
 
+export const patchGameIsAcceptingScores = createApiService(
+  '/games/{game_id}/is-accepting-scores/',
+  'patch'
+);
+
 export const assignMatchups = createApiService(
   '/games/assign-matchups/',
   'post'

@@ -4,9 +4,16 @@ import { getDate } from '../../utils/getDate';
 import { DateTime } from 'luxon';
 import { config } from '../../config/config';
 import { paths, operations, components } from '../../openapi_schema';
+import {
+  GameExportsById,
+  LocationExportsById,
+  TeamExportsById,
+} from '../../types';
 
-type ScheduleAggregator = components['schemas']['ScheduleAggregator'];
-interface DataProps extends ScheduleAggregator {
+interface DataProps {
+  games: GameExportsById | undefined;
+  locations: LocationExportsById | undefined;
+  teams: TeamExportsById | undefined;
   game_ids: components['schemas']['GameExport']['id'][];
 }
 
@@ -21,13 +28,24 @@ function Panels({ data, roundId, admin = false, includeLink = true }: Props) {
   const [date, setDate] = useState<DateTime | null>(null);
 
   useEffect(() => {
-    if (data !== null) {
-      setDate(
-        getDate(
-          data.games[data.game_ids[0]].datetime,
-          data.locations[data.games[data.game_ids[0]].location_id].time_zone
-        )
-      );
+    if (data !== undefined) {
+      const firstGameId = data.game_ids[0];
+      if (firstGameId !== undefined) {
+        if (data.games !== undefined) {
+          const firstGame = data.games[firstGameId];
+          if (firstGame !== undefined) {
+            if (data.locations !== undefined) {
+              const locationId = firstGame.location_id;
+              if (locationId !== null) {
+                const location = data.locations[locationId];
+                if (location !== undefined) {
+                  setDate(getDate(firstGame.datetime, location.time_zone));
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }, [data]);
 
@@ -46,12 +64,11 @@ function Panels({ data, roundId, admin = false, includeLink = true }: Props) {
 
         <BasePanels
           data={
-            data === null
-              ? null
+            data === undefined
+              ? undefined
               : {
                   games: data.games,
                   game_ids: data.game_ids,
-                  scores: data.scores,
                   teams: data.teams,
                   locations: data.locations,
                 }

@@ -63,25 +63,26 @@ function Home() {
                     key={obj === null ? `index${index}` : obj.round}
                     className="panels"
                   >
-                    {/* <Panels
+                    <Panels
                       data={
-                        data !== undefined && {
-                          game_ids: obj.game_ids,
-                          games: apiData.games,
-                          teams: apiData.teams,
-                          locations: apiData.locations,
-                        }
+                        data !== undefined && obj !== null
+                          ? {
+                              game_ids: obj.game_ids,
+                              games: apiData.games,
+                              teams: apiData.teams,
+                              locations: apiData.locations,
+                            }
+                          : undefined
                       }
                       roundId={obj === null ? index : obj.round}
-                    ></Panels> */}
-                    <p>{obj?.game_ids}</p>
+                    ></Panels>
                   </div>
                 )
               )}
             </GridDiv>
           </div>
-          <h1 className="text-center mt-8">Tournaments</h1>
-          {/* <div className="flex flex-col space-y-6">
+          {/* <h1 className="text-center mt-8">Tournaments</h1>
+          <div className="flex flex-col space-y-6">
             {data === null
               ? null
               : data.tournaments.map((tournament) => {

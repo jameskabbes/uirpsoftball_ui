@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { paths, operations, components } from '../openapi_schema';
-import { useApiData } from '../utils/api';
 
 const API_PATH = '/pages/rules';
 
@@ -20,11 +19,6 @@ function Rules() {
       }
     }
   }, [location]);
-
-  const [data, setData, loading, setLoading, status, setStatus] =
-    useApiData<
-      paths[typeof API_PATH]['get']['responses']['200']['content']['application/json']
-    >(API_PATH);
 
   return (
     <>

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { callApi, useApiData } from '../utils/api';
+import { callApi, useApiCall } from '../utils/api';
 import { Panels } from '../components/Schedule/Week';
 import { paths, operations, components } from '../openapi_schema';
 

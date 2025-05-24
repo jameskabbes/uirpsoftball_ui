@@ -4,7 +4,7 @@ import { getColor } from './getColor';
 import { paths, operations, components } from '../../openapi_schema';
 
 interface Props {
-  team: components['schemas']['Team'] | null;
+  team: components['schemas']['TeamExport'] | undefined;
   style?: object;
 }
 

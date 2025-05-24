@@ -157,6 +157,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/games/{game_id}/is-accepting-scores/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Is Accepting Scores */
+        patch: operations["update_is_accepting_scores_games__game_id__is_accepting_scores__patch"];
+        trace?: never;
+    };
     "/locations/": {
         parameters: {
             query?: never;
@@ -461,7 +478,7 @@ export interface components {
             game: components["schemas"]["GameExport"];
             /** Teams */
             teams: {
-                [key: string]: components["schemas"]["TeamExport"];
+                [key: string]: components["schemas"]["TeamExport"] | undefined;
             };
             location: components["schemas"]["LocationExport"] | null;
         };
@@ -474,24 +491,29 @@ export interface components {
         HomeResponse: {
             /** Games */
             games: {
-                [key: string]: components["schemas"]["GameExport"];
+                [key: string]: components["schemas"]["GameExport"] | undefined;
             };
             /** Teams */
             teams: {
-                [key: string]: components["schemas"]["TeamExport"];
+                [key: string]: components["schemas"]["TeamExport"] | undefined;
             };
             /** Locations */
             locations: {
-                [key: string]: components["schemas"]["LocationExport"];
+                [key: string]: components["schemas"]["LocationExport"] | undefined;
             };
             /** Game Ids And Rounds */
             game_ids_and_rounds: components["schemas"]["GameIdsAndRounds"][];
             /** Divisions */
             divisions: {
-                [key: string]: components["schemas"]["DivisionExport"];
+                [key: string]: components["schemas"]["DivisionExport"] | undefined;
             };
             /** Division Ids Ordered */
             division_ids_ordered: number[];
+        };
+        /** IsAcceptingScoresUpdate */
+        IsAcceptingScoresUpdate: {
+            /** Is Accepting Scores */
+            is_accepting_scores?: boolean | null;
         };
         /** LocationExport */
         LocationExport: {
@@ -510,18 +532,28 @@ export interface components {
         ScheduleResponse: {
             /** Games */
             games: {
-                [key: string]: components["schemas"]["GameExport"];
+                [key: string]: components["schemas"]["GameExport"] | undefined;
             };
             /** Teams */
             teams: {
-                [key: string]: components["schemas"]["TeamExport"];
+                [key: string]: components["schemas"]["TeamExport"] | undefined;
             };
             /** Locations */
             locations: {
-                [key: string]: components["schemas"]["LocationExport"];
+                [key: string]: components["schemas"]["LocationExport"] | undefined;
             };
+            /** Game Ids And Rounds */
+            game_ids_and_rounds: components["schemas"]["GameIdsAndRounds"][];
             /** Tournaments */
             tournaments: components["schemas"]["TournamentExport"][];
+            /** Tournament Games */
+            tournament_games: {
+                [key: string]: {
+                    [key: string]: {
+                        [key: string]: components["schemas"]["TournamentGameExport"][] | undefined;
+                    } | undefined;
+                } | undefined;
+            };
         };
         /** ScoreUpdate */
         ScoreUpdate: {
@@ -543,7 +575,7 @@ export interface components {
         StandingsResponse: {
             /** Teams */
             teams: {
-                [key: string]: components["schemas"]["TeamExport"];
+                [key: string]: components["schemas"]["TeamExport"] | undefined;
             };
         };
         /** TeamExport */
@@ -563,15 +595,15 @@ export interface components {
         TeamResponse: {
             /** Games */
             games: {
-                [key: string]: components["schemas"]["GameExport"];
+                [key: string]: components["schemas"]["GameExport"] | undefined;
             };
             /** Teams */
             teams: {
-                [key: string]: components["schemas"]["TeamExport"];
+                [key: string]: components["schemas"]["TeamExport"] | undefined;
             };
             /** Locations */
             locations: {
-                [key: string]: components["schemas"]["LocationExport"];
+                [key: string]: components["schemas"]["LocationExport"] | undefined;
             };
             /** Games Known Ids */
             games_known_ids: number[];
@@ -901,6 +933,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": unknown;
+                };
+            };
+        };
+    };
+    update_is_accepting_scores_games__game_id__is_accepting_scores__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                game_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IsAcceptingScoresUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GameExport"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

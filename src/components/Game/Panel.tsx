@@ -10,11 +10,21 @@ import { getDate } from '../../utils/getDate';
 import { callApi } from '../../utils/api';
 import { DateTime } from 'luxon';
 import { Dot as TeamDot } from '../Team/Dot';
+import { TeamExportsById } from '../../types';
+import {
+  patchGameScore,
+  patchGameIsAcceptingScores,
+} from '../../services/apiServices';
+import { ApiServiceResponseDataByStatus } from '../../types';
 
-const API_PATH = '/game/{game_id}';
+interface DataProps {
+  game: components['schemas']['GameExport'];
+  location: components['schemas']['LocationExport'] | undefined;
+  teams: TeamExportsById;
+}
 
 interface Props {
-  data: components['schemas']['GameAggregator'] | null;
+  data: DataProps | undefined;
   admin?: boolean;
   includeDate?: boolean;
   includeTime?: boolean;
@@ -41,21 +51,23 @@ function Panel({
   const [isAcceptingScores, setIsAcceptingScores] = useState<boolean>(false);
 
   useEffect(() => {
-    if (data !== null) {
-      setDate(getDate(data.game.datetime, data.location.time_zone));
-
+    if (data !== undefined) {
+      if (data.location !== undefined) {
+        setDate(getDate(data.game.datetime, data.location.time_zone));
+      }
       // bold the team name that won the game
-      if (data.score !== undefined) {
-        if (data.score.home !== undefined && data.score.away !== undefined) {
-          setIncludeScore(true);
-          if (data.score.home > data.score.away) {
-            setWinningTeam('home');
-          } else if (data.score.away > data.score.home) {
-            setWinningTeam('away');
-          }
-        } else {
-          setIncludeScore(false);
+      if (
+        data.game.home_team_score !== null &&
+        data.game.away_team_score !== null
+      ) {
+        setIncludeScore(true);
+        if (data.game.home_team_score > data.game.away_team_score) {
+          setWinningTeam('home');
+        } else if (data.game.home_team_score < data.game.away_team_score) {
+          setWinningTeam('away');
         }
+      } else {
+        setIncludeScore(false);
       }
 
       setIsAcceptingScores(data.game.is_accepting_scores);
@@ -63,27 +75,22 @@ function Panel({
   }, [data]);
 
   function handleToggleAcceptingScores() {
-    if (data !== null) {
+    if (data !== undefined) {
       setIsAcceptingScores((prevIsAcceptingScores) => {
-        async function call() {
-          try {
-            const response = await callApi<
-              paths[typeof API_PATH]['patch']['responses']['200']['content']['application/json']
-            >(API_PATH.replace('{game_id}', data.game.id.toString()), 'PATCH', {
-              ...data.game,
-              is_accepting_scores: !prevIsAcceptingScores,
-            });
-          } catch (error) {
-            console.error(error);
-          }
-        }
-        call();
+        patchGameIsAcceptingScores.call({
+          data: {
+            is_accepting_scores: !prevIsAcceptingScores,
+          },
+          pathParams: {
+            game_id: data.game.id,
+          },
+        });
         return !prevIsAcceptingScores;
       });
     }
   }
 
-  if (includeLink && data !== null) {
+  if (includeLink && data !== undefined) {
     return <GameLink game={data.game}>{Component()}</GameLink>;
   } else {
     return Component();
@@ -110,25 +117,25 @@ function Panel({
                           style={{ width: '1.25rem' }}
                           className={winningTeam === 'away' ? 'font-bold' : ''}
                         >
-                          {data?.score?.away}
+                          {data?.game.away_team_score ?? null}{' '}
                         </div>
                       )}
                       <TeamDot
                         team={
-                          data === null
-                            ? null
-                            : data.teams[data.game.away_team_id]
+                          data?.game.away_team_id != null
+                            ? data?.teams?.[data.game.away_team_id]
+                            : undefined
                         }
                       />
                       <span
                         className={winningTeam === 'away' ? 'font-bold' : ''}
                       >
-                        {data === null
-                          ? 'Away Team'
-                          : data.game.away_team_id < 0 &&
-                            awayTeamFiller !== undefined
+                        {data?.game.away_team_id != null &&
+                        data?.teams?.[data.game.away_team_id]?.name
+                          ? data.teams[data.game.away_team_id]?.name
+                          : awayTeamFiller !== undefined
                           ? awayTeamFiller
-                          : data.teams[data.game.away_team_id].name}
+                          : 'Away Team'}{' '}
                       </span>
                     </div>
 
@@ -138,25 +145,25 @@ function Panel({
                           style={{ width: '1.25rem' }}
                           className={winningTeam === 'home' ? 'font-bold' : ''}
                         >
-                          {data?.score?.home}
+                          {data?.game.home_team_score ?? null}{' '}
                         </span>
                       )}
                       <TeamDot
                         team={
-                          data === null
-                            ? null
-                            : data.teams[data.game.home_team_id]
+                          data?.game.home_team_id != null
+                            ? data?.teams?.[data.game.home_team_id]
+                            : undefined
                         }
                       />
                       <span
                         className={winningTeam === 'home' ? 'font-bold' : ''}
                       >
-                        {data === null
-                          ? 'Home Team'
-                          : data.game.home_team_id < 0 &&
-                            homeTeamFiller !== undefined
+                        {data?.game.home_team_id != null &&
+                        data?.teams?.[data.game.home_team_id]?.name
+                          ? data.teams[data.game.home_team_id]?.name
+                          : homeTeamFiller !== undefined
                           ? homeTeamFiller
-                          : data.teams[data.game.home_team_id].name}
+                          : 'Home Team'}{' '}
                       </span>
                     </div>
                   </div>
@@ -203,7 +210,11 @@ function Panel({
 
                 <div className="flex flex-row space-x-1 items-center justify-end">
                   <p>
-                    {data === null ? 'loading...' : data.location.short_name}
+                    {data === undefined
+                      ? 'loading...'
+                      : data.location === undefined
+                      ? 'No Location'
+                      : data.location.short_name}
                   </p>
                   <p>
                     <CiLocationOn className="bw-icon" />
@@ -214,9 +225,9 @@ function Panel({
                   <p>
                     <DotAndName
                       team={
-                        data === null
-                          ? null
-                          : data.teams[data.game.officiating_team_id]
+                        data?.game.officiating_team_id != null
+                          ? data?.teams?.[data.game.officiating_team_id]
+                          : undefined
                       }
                     />
                   </p>
@@ -236,7 +247,7 @@ function Panel({
                   <p>{isAcceptingScores ? <BsToggleOn /> : <BsToggleOff />}</p>
                 </div>
                 <div>
-                  <GameLink game={data === null ? null : data.game}>
+                  <GameLink game={data === undefined ? undefined : data.game}>
                     <button>Game</button>
                   </GameLink>
                 </div>
