@@ -4,8 +4,7 @@ import { Panel } from './Panel';
 import { paths, operations, components } from '../../openapi_schema';
 
 interface DataProps {
-  team: components['schemas']['Team'];
-  standing: components['schemas']['Standing'];
+  team: components['schemas']['TeamExport'];
 }
 
 interface Props {

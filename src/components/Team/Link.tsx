@@ -3,12 +3,12 @@ import { Link as ReactLink } from 'react-router-dom';
 import { paths, operations, components } from '../../openapi_schema';
 
 interface Props {
-  team: components['schemas']['Team'] | null;
+  team: components['schemas']['TeamExport'] | undefined;
   children: ReactNode;
 }
 
 function Link({ team, children }: Props) {
-  if (team === null) {
+  if (team === undefined) {
     return children;
   }
   if (team.id < 0) {

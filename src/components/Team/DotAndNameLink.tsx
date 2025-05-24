@@ -4,7 +4,7 @@ import { DotAndName } from './DotAndName';
 import { paths, operations, components } from '../../openapi_schema';
 
 interface Props {
-  team: components['schemas']['Team'];
+  team: components['schemas']['TeamExport'] | undefined;
 }
 
 function DotAndNameLink({ team }: Props) {
