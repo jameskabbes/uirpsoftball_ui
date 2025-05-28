@@ -9,9 +9,14 @@ import { createEvent } from './createEvent';
 import { DateTime } from 'luxon';
 import { Details } from './Details';
 import { DotAndNameMatchup } from './DotAndNameMatchup';
+import { DataProps, TeamExportsById } from '../../types';
 
-interface Props {
-  data: components['schemas']['GameAggregator'];
+interface Props
+  extends DataProps<{
+    game: components['schemas']['GameExport'];
+    location: components['schemas']['LocationExport'] | null;
+    teams: TeamExportsById;
+  }> {
   submitScore: CallableFunction;
 }
 
@@ -19,52 +24,65 @@ function Card({ data, submitScore }: Props) {
   const [date, setDate] = useState<DateTime | null>(null);
 
   useEffect(() => {
-    if (data !== null) {
+    if (data !== undefined && data.location !== null) {
       setDate(getDate(data.game.datetime, data.location.time_zone));
     }
   }, [data]);
 
-  const generateICSFile = (): string => {
-    return createCalendar([
-      createEvent(
-        data.game,
-        data.location,
-        data.teams[data.game.home_team_id],
-        data.teams[data.game.away_team_id],
-        data.teams[data.game.officiating_team_id]
-      ),
-    ]);
-  };
-
   const downloadICSFile = () => {
-    const icsContent = generateICSFile();
-    downloadCalendar(icsContent);
+    if (data !== undefined && data.location !== null) {
+      const { game, location, teams } = data;
+      const icsContent = createCalendar([
+        createEvent(
+          game,
+          location,
+          game.home_team_id !== null ? teams[game.home_team_id] ?? null : null,
+          game.away_team_id !== null ? teams[game.away_team_id] ?? null : null,
+          game.officiating_team_id !== null
+            ? teams[game.officiating_team_id] ?? null
+            : null
+        ),
+      ]);
+      downloadCalendar(icsContent);
+    }
   };
 
   return (
     <div className="card">
       <div>
         <DotAndNameMatchup
-          homeTeam={data === null ? null : data.teams[data.game.home_team_id]}
-          awayTeam={data === null ? null : data.teams[data.game.away_team_id]}
+          data={
+            data === undefined
+              ? undefined
+              : {
+                  homeTeam:
+                    data.game.home_team_id === null
+                      ? null
+                      : data.teams[data.game.home_team_id] ?? null,
+                  awayTeam:
+                    data.game.away_team_id === null
+                      ? null
+                      : data.teams[data.game.away_team_id] ?? null,
+                }
+          }
         />
       </div>
       <Scores
-        data={
-          data === null
-            ? null
-            : {
-                game: data.game,
-                score: data.score,
-              }
-        }
+        data={data === undefined ? undefined : { game: data.game }}
         submitScore={submitScore}
       ></Scores>
       <Details
-        date={date}
-        location={data === null ? null : data.location}
-        officiatingTeam={
-          data === null ? null : data.teams[data.game.officiating_team_id]
+        data={
+          data === undefined
+            ? undefined
+            : {
+                date,
+                location: data.location,
+                officiatingTeam:
+                  data.game.officiating_team_id === null
+                    ? null
+                    : data.teams[data.game.officiating_team_id] ?? null,
+              }
         }
       ></Details>
 

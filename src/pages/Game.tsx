@@ -12,14 +12,11 @@ import { ApiServiceResponseDataByStatus } from '../types';
 function Game() {
   const gameIdParam = useParams().gameId;
 
-  if (gameIdParam === undefined) {
-    return <NotFound />;
-  }
   const gameId = Number(
     gameIdParam
   ) as components['schemas']['GameExport']['id'];
 
-  const { data, loading, status, refetch } = useApiCall(getGamePage, {
+  const { data, status, refetch } = useApiCall(getGamePage, {
     pathParams: {
       game_id: gameId,
     },

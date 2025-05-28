@@ -4,33 +4,27 @@ import { Panel as GamePanel } from '../Game/Panel';
 import { Dot } from '../Team/Dot';
 import { DotAndName } from '../Team/DotAndName';
 import { Link } from '../Game/Link';
+import {
+  DataProps,
+  GameExportsById,
+  LocationExportsById,
+  TeamExportsById,
+} from '../../types';
 
-interface DataProps {
-  tournament: components['schemas']['TournamentExport'];
-  tournament_games: Record<
-    number,
-    Record<
-      components['schemas']['GameExport']['round_id'],
-      components['schemas']['TournamentGameExport'][]
-    >
-  >;
-  games: Record<
-    components['schemas']['GameExport']['id'],
-    components['schemas']['GameExport']
-  >;
-  teams: Record<
-    components['schemas']['TeamExport']['id'],
-    components['schemas']['TeamExport']
-  >;
-  locations: Record<
-    components['schemas']['LocationExport']['id'],
-    components['schemas']['LocationExport']
-  >;
-}
-
-interface Props {
-  data: DataProps;
-}
+interface Props
+  extends DataProps<{
+    tournament: components['schemas']['TournamentExport'];
+    tournament_games: Record<
+      number,
+      Record<
+        components['schemas']['GameExport']['round_id'],
+        components['schemas']['TournamentGameExport'][]
+      >
+    >;
+    games: GameExportsById;
+    teams: TeamExportsById;
+    locations: LocationExportsById;
+  }> {}
 
 function Tournament({ data }: Props) {
   // get bracket ids

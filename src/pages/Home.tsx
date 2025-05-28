@@ -10,7 +10,7 @@ import { ApiServiceResponseDataByStatus } from '../types';
 import { getHomePage } from '../services/apiServices';
 
 function Home() {
-  const { data, loading, status, refetch } = useApiCall(getHomePage, {});
+  const { data, status, refetch } = useApiCall(getHomePage, {});
 
   useEffect(() => {
     document.title = 'UIRP Softball';

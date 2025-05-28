@@ -1,17 +1,21 @@
 import React, { ReactNode } from 'react';
 import { Link as ReactLink } from 'react-router-dom';
 import { paths, operations, components } from '../../openapi_schema';
+import { DataProps } from '../../types';
+import { getLink } from './getLink';
 
-interface Props {
-  game: components['schemas']['GameExport'] | undefined;
+interface Props
+  extends DataProps<{
+    game: components['schemas']['GameExport'] | null;
+  }> {
   children: ReactNode;
 }
 
-function Link({ game, children }: Props) {
-  if (game === undefined) {
+function Link({ data, children }: Props) {
+  if (data === undefined || data.game === null) {
     return children;
   }
-  return <ReactLink to={'/game/' + game.id}>{children}</ReactLink>;
+  return <ReactLink to={getLink(data.game)}>{children}</ReactLink>;
 }
 
 export { Link };

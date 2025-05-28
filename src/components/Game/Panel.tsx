@@ -10,21 +10,19 @@ import { getDate } from '../../utils/getDate';
 import { callApi } from '../../utils/api';
 import { DateTime } from 'luxon';
 import { Dot as TeamDot } from '../Team/Dot';
-import { TeamExportsById } from '../../types';
+import { DataProps, TeamExportsById } from '../../types';
 import {
   patchGameScore,
   patchGameIsAcceptingScores,
 } from '../../services/apiServices';
 import { ApiServiceResponseDataByStatus } from '../../types';
 
-interface DataProps {
-  game: components['schemas']['GameExport'];
-  location: components['schemas']['LocationExport'] | undefined;
-  teams: TeamExportsById;
-}
-
-interface Props {
-  data: DataProps | undefined;
+interface Props
+  extends DataProps<{
+    game: components['schemas']['GameExport'];
+    location: components['schemas']['LocationExport'] | null;
+    teams: TeamExportsById;
+  }> {
   admin?: boolean;
   includeDate?: boolean;
   includeTime?: boolean;
@@ -52,7 +50,7 @@ function Panel({
 
   useEffect(() => {
     if (data !== undefined) {
-      if (data.location !== undefined) {
+      if (data.location !== null) {
         setDate(getDate(data.game.datetime, data.location.time_zone));
       }
       // bold the team name that won the game
@@ -91,7 +89,7 @@ function Panel({
   }
 
   if (includeLink && data !== undefined) {
-    return <GameLink game={data.game}>{Component()}</GameLink>;
+    return <GameLink data={{ game: data.game }}>{Component()}</GameLink>;
   } else {
     return Component();
   }
@@ -121,21 +119,31 @@ function Panel({
                         </div>
                       )}
                       <TeamDot
-                        team={
-                          data?.game.away_team_id != null
-                            ? data?.teams?.[data.game.away_team_id]
-                            : undefined
+                        data={
+                          data === undefined
+                            ? undefined
+                            : {
+                                team:
+                                  data.game.away_team_id === null
+                                    ? null
+                                    : data.teams[data.game.away_team_id] ??
+                                      null,
+                              }
                         }
                       />
                       <span
                         className={winningTeam === 'away' ? 'font-bold' : ''}
                       >
-                        {data?.game.away_team_id != null &&
-                        data?.teams?.[data.game.away_team_id]?.name
-                          ? data.teams[data.game.away_team_id]?.name
-                          : awayTeamFiller !== undefined
-                          ? awayTeamFiller
-                          : 'Away Team'}{' '}
+                        {(() => {
+                          if (data === undefined) return 'Away Team';
+                          if (data.game.away_team_id === null) return 'TBD';
+                          const team = data.teams[data.game.away_team_id];
+                          if (team === undefined)
+                            return awayTeamFiller !== undefined
+                              ? awayTeamFiller
+                              : 'Away Team';
+                          return team.name;
+                        })()}{' '}
                       </span>
                     </div>
 
@@ -149,21 +157,31 @@ function Panel({
                         </span>
                       )}
                       <TeamDot
-                        team={
-                          data?.game.home_team_id != null
-                            ? data?.teams?.[data.game.home_team_id]
-                            : undefined
+                        data={
+                          data === undefined
+                            ? undefined
+                            : {
+                                team:
+                                  data.game.home_team_id === null
+                                    ? null
+                                    : data.teams[data.game.home_team_id] ??
+                                      null,
+                              }
                         }
                       />
                       <span
                         className={winningTeam === 'home' ? 'font-bold' : ''}
                       >
-                        {data?.game.home_team_id != null &&
-                        data?.teams?.[data.game.home_team_id]?.name
-                          ? data.teams[data.game.home_team_id]?.name
-                          : homeTeamFiller !== undefined
-                          ? homeTeamFiller
-                          : 'Home Team'}{' '}
+                        {(() => {
+                          if (data === undefined) return 'Home Team';
+                          if (data.game.home_team_id === null) return 'TBD';
+                          const team = data.teams[data.game.home_team_id];
+                          if (team === undefined)
+                            return homeTeamFiller !== undefined
+                              ? homeTeamFiller
+                              : 'Home Team';
+                          return team.name;
+                        })()}{' '}
                       </span>
                     </div>
                   </div>
@@ -174,14 +192,14 @@ function Panel({
                 {includeDate && (
                   <div className="flex flex-row space-x-1 items-center justify-end">
                     <p className="text-right">
-                      {date === null ? (
-                        <span>loading...</span>
-                      ) : (
-                        date.toLocaleString({
-                          month: 'long',
-                          day: 'numeric',
-                        })
-                      )}
+                      {data === undefined
+                        ? 'loading...'
+                        : date === null
+                        ? 'TBD'
+                        : date.toLocaleString({
+                            month: 'long',
+                            day: 'numeric',
+                          })}
                     </p>
                     <p>
                       <BsCalendar4 className="bw-icon" />
@@ -192,15 +210,15 @@ function Panel({
                 {includeTime && (
                   <div className="flex flex-row space-x-1 items-center justify-end">
                     <p>
-                      {date === null ? (
-                        <span>loading...</span>
-                      ) : (
-                        date.toLocaleString({
-                          hour: 'numeric',
-                          minute: 'numeric',
-                          hour12: true,
-                        })
-                      )}
+                      {data === undefined
+                        ? 'loading...'
+                        : date === null
+                        ? 'TBD'
+                        : date.toLocaleString({
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true,
+                          })}
                     </p>
                     <p>
                       <BiTimeFive className="bw-icon" />
@@ -212,8 +230,8 @@ function Panel({
                   <p>
                     {data === undefined
                       ? 'loading...'
-                      : data.location === undefined
-                      ? 'No Location'
+                      : data.location === null
+                      ? 'TBD'
                       : data.location.short_name}
                   </p>
                   <p>
@@ -224,10 +242,16 @@ function Panel({
                 <div className="flex flex-row space-x-1 items-center justify-end">
                   <p>
                     <DotAndName
-                      team={
-                        data?.game.officiating_team_id != null
-                          ? data?.teams?.[data.game.officiating_team_id]
-                          : undefined
+                      data={
+                        data === undefined
+                          ? undefined
+                          : {
+                              team:
+                                data.game.officiating_team_id === null
+                                  ? null
+                                  : data.teams[data.game.officiating_team_id] ??
+                                    null,
+                            }
                       }
                     />
                   </p>
@@ -247,7 +271,9 @@ function Panel({
                   <p>{isAcceptingScores ? <BsToggleOn /> : <BsToggleOff />}</p>
                 </div>
                 <div>
-                  <GameLink game={data === undefined ? undefined : data.game}>
+                  <GameLink
+                    data={data === undefined ? undefined : { game: data.game }}
+                  >
                     <button>Game</button>
                   </GameLink>
                 </div>

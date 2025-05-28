@@ -8,20 +8,18 @@ import { UmpireMask } from '../icons/UmpireMask';
 import { DotAndName } from '../Team/DotAndName';
 import { Link } from 'react-router-dom';
 import { DateTime } from 'luxon';
+import { DataProps } from '../../types';
 
-interface Props {
-  date: DateTime | null;
-  location: components['schemas']['Location'] | null;
-  officiatingTeam: components['schemas']['Team'] | null;
+interface Props
+  extends DataProps<{
+    date: DateTime | null;
+    location: components['schemas']['LocationExport'] | null;
+    officiatingTeam: components['schemas']['TeamExport'] | null;
+  }> {
   includeLinks?: boolean;
 }
 
-function Details({
-  date,
-  location,
-  officiatingTeam,
-  includeLinks = true,
-}: Props) {
+function Details({ data, includeLinks = true }: Props) {
   return (
     <div className="flex flex-row m-2 justify-center">
       <div className="flex flex-col">
@@ -31,9 +29,11 @@ function Details({
             <p>Date</p>
           </div>
           <p className="text-right">
-            {date !== null
-              ? date.toLocaleString({ month: 'long', day: 'numeric' })
-              : 'loading...'}
+            {data === undefined
+              ? 'loading...'
+              : data.date === null
+              ? 'TBD'
+              : data.date.toLocaleString({ month: 'long', day: 'numeric' })}
           </p>
         </div>
 
@@ -43,13 +43,15 @@ function Details({
             <p>Time</p>
           </div>
           <p className="text-right">
-            {date !== null
-              ? date.toLocaleString({
+            {data === undefined
+              ? 'loading...'
+              : data.date === null
+              ? 'TBD'
+              : data.date.toLocaleString({
                   hour: 'numeric',
                   minute: 'numeric',
                   hour12: true,
-                })
-              : 'loading...'}
+                })}
           </p>
         </div>
 
@@ -59,16 +61,18 @@ function Details({
             <p>Location</p>
           </div>
           <p className="text-right">
-            {location === null ? (
-              <span>loading...</span>
+            {data === undefined ? (
+              'loading...'
+            ) : data.location === null ? (
+              'TBD'
             ) : (
               <>
-                {includeLinks ? (
-                  <Link to={location.link}>
-                    <span className="underline">{location.name}</span>
+                {includeLinks && data.location?.link ? (
+                  <Link to={data.location.link}>
+                    <span className="underline">{data.location.name}</span>
                   </Link>
                 ) : (
-                  <span className="underline">{location.name}</span>
+                  <span>{data.location.name}</span>
                 )}
               </>
             )}
@@ -83,7 +87,11 @@ function Details({
           <div className="text-right">
             <p>
               <DotAndName
-                team={officiatingTeam === null ? null : officiatingTeam}
+                data={
+                  data === undefined
+                    ? undefined
+                    : { team: data.officiatingTeam }
+                }
               />
             </p>
           </div>

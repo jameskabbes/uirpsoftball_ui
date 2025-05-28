@@ -243,8 +243,11 @@ type PartialAxiosResponse<T> = {
 };
 
 export interface UseApiCallReturn<TData> extends PartialAxiosResponse<TData> {
-  loading: boolean;
   refetch: () => void;
+}
+
+export interface DataProps<T> {
+  data: T | undefined;
 }
 
 export interface DarkModeContextData {

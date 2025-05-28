@@ -20,7 +20,7 @@ function Team() {
     return <NotFound />;
   }
 
-  const { data, loading, status, refetch } = useApiCall(getTeamPage, {
+  const { data, status, refetch } = useApiCall(getTeamPage, {
     pathParams: {
       team_slug: teamSlug,
     },
@@ -54,10 +54,10 @@ function Team() {
             <div className="flex flex-col items-center mt-4">
               <h1 className="text-center">
                 <DotAndName
-                  team={
-                    apiData === undefined
-                      ? null
-                      : apiData.teams[apiData.team_id]
+                  data={
+                    data === undefined
+                      ? undefined
+                      : { team: apiData.teams[apiData.team_id] ?? null }
                   }
                 />
               </h1>
@@ -68,14 +68,15 @@ function Team() {
                 const featuredGame = apiData.games[apiData.featured_game_id];
                 if (featuredGame && featuredGame.location_id != null) {
                   return (
-                    <GameLink game={featuredGame}>
+                    <GameLink data={{ game: featuredGame }}>
                       <div className="max-w-lg mx-auto mt-8">
                         <CardPreview
                           data={{
                             game: featuredGame,
                             teams: apiData.teams,
                             location:
-                              apiData.locations[featuredGame.location_id],
+                              apiData.locations[featuredGame.location_id] ??
+                              null,
                           }}
                         />
                       </div>

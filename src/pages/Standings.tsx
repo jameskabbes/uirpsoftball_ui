@@ -8,7 +8,7 @@ import { getStandingsPage } from '../services/apiServices';
 import { ApiServiceResponseDataByStatus } from '../types';
 
 function Standings() {
-  const { data, loading, status, refetch } = useApiCall(getStandingsPage, {});
+  const { data, status, refetch } = useApiCall(getStandingsPage, {});
 
   useEffect(() => {
     document.title = 'Standings';

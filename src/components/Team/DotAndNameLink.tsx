@@ -2,16 +2,18 @@ import React from 'react';
 import { Link } from './Link';
 import { DotAndName } from './DotAndName';
 import { paths, operations, components } from '../../openapi_schema';
+import { DataProps } from '../../types';
 
-interface Props {
-  team: components['schemas']['TeamExport'] | undefined;
-}
+interface Props
+  extends DataProps<{
+    team: components['schemas']['TeamExport'];
+  }> {}
 
-function DotAndNameLink({ team }: Props) {
+function DotAndNameLink({ data }: Props) {
   return (
     <div className="">
-      <Link team={team}>
-        <DotAndName team={team} />
+      <Link data={data}>
+        <DotAndName data={data} />
       </Link>
     </div>
   );

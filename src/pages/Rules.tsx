@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { paths, operations, components } from '../openapi_schema';
 
-const API_PATH = '/pages/rules';
-
 function Rules() {
   const location = useLocation();
 

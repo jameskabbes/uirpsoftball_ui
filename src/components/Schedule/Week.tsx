@@ -5,20 +5,19 @@ import { DateTime } from 'luxon';
 import { config } from '../../config/config';
 import { paths, operations, components } from '../../openapi_schema';
 import {
+  DataProps,
   GameExportsById,
   LocationExportsById,
   TeamExportsById,
 } from '../../types';
 
-interface DataProps {
-  games: GameExportsById | undefined;
-  locations: LocationExportsById | undefined;
-  teams: TeamExportsById | undefined;
-  game_ids: components['schemas']['GameExport']['id'][];
-}
-
-interface Props {
-  data: DataProps | undefined;
+interface Props
+  extends DataProps<{
+    games: GameExportsById;
+    locations: LocationExportsById;
+    teams: TeamExportsById;
+    game_ids: components['schemas']['GameExport']['id'][];
+  }> {
   roundId: components['schemas']['GameExport']['round_id'];
   admin?: boolean;
   includeLink?: boolean;
@@ -55,9 +54,10 @@ function Panels({ data, roundId, admin = false, includeLink = true }: Props) {
         <div className="card px-2 py-1 mx-1 my-4">
           <h2 className="text-center mb-0">
             <>
-              {data === null ? 'loading...' : `Week ${roundId}`}
-              {date !== null &&
-                ' - ' + date.toLocaleString({ month: 'long', day: 'numeric' })}
+              {/* { data === undefined ? 'loading...': }
+              {data === undefined ? 'loading...' : `Week ${roundId}`}
+              {date === undefined  null &&
+                ' - ' + date.toLocaleString({ month: 'long', day: 'numeric' })} */}
             </>
           </h2>
         </div>

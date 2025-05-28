@@ -201,20 +201,17 @@ export function useApiCall<
   >,
   dependencies: any[] = []
 ): UseApiCallReturn<TResponseData> {
-  const [loading, setLoading] = useState<boolean>(true);
   const [response, setResponse] = useState<
     AxiosResponse<TResponseData> | undefined
   >(undefined);
 
   async function refetch() {
-    setLoading(true);
     setResponse(await apiService.call(apiServiceOptions));
-    setLoading(false);
   }
 
   useEffect(() => {
     refetch();
   }, dependencies);
 
-  return { ...response, loading, refetch };
+  return { ...response, refetch };
 }

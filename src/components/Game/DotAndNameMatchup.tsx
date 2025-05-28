@@ -3,57 +3,46 @@ import { paths, operations, components } from '../../openapi_schema';
 
 import { Dot as TeamDot } from '../Team/Dot';
 import { Link as TeamLink } from '../Team/Link';
+import { DataProps } from '../../types';
 
-interface Props {
-  homeTeam: components['schemas']['Team'] | null;
-  awayTeam: components['schemas']['Team'] | null;
+interface Props
+  extends DataProps<{
+    homeTeam: components['schemas']['TeamExport'] | null;
+    awayTeam: components['schemas']['TeamExport'] | null;
+  }> {
   includeTeamLinks?: boolean;
 }
 
-function DotAndNameMatchup({
-  homeTeam,
-  awayTeam,
-  includeTeamLinks = true,
-}: Props) {
-  function Dot({ team }: { team: components['schemas']['Team'] | null }) {
-    return (
-      <h1>
-        <TeamDot team={team} />
-      </h1>
-    );
-  }
-
-  function Name({
-    team,
-    loadingFiller,
-  }: {
-    team: components['schemas']['Team'] | null;
+function DotAndNameMatchup({ data, includeTeamLinks = true }: Props) {
+  interface Props
+    extends DataProps<{
+      team: components['schemas']['TeamExport'] | null;
+    }> {
     loadingFiller: string;
-  }) {
-    return <h3>{team === null ? loadingFiller : team.name}</h3>;
-  }
-
-  function DotAndName({
-    team,
-    loadingFiller,
-    includeTeamLinks,
-  }: {
-    team: components['schemas']['Team'] | null;
     includeTeamLinks: boolean;
-    loadingFiller: string;
-  }) {
+  }
+
+  function DotAndName({ data, loadingFiller, includeTeamLinks }: Props) {
     function Inner() {
       return (
         <div className="flex flex-col items-center">
-          <Dot team={team} />
-          <Name team={team} loadingFiller={loadingFiller} />
+          <h1>
+            <TeamDot data={data} />
+          </h1>
+          <h3>
+            {data === undefined
+              ? loadingFiller
+              : data.team === null
+              ? 'Team TBD'
+              : data.team.name}
+          </h3>
         </div>
       );
     }
 
-    if (includeTeamLinks && team !== null) {
+    if (data !== undefined && includeTeamLinks && data.team !== null) {
       return (
-        <TeamLink team={team}>
+        <TeamLink data={{ team: data.team }}>
           <Inner />
         </TeamLink>
       );
@@ -67,12 +56,12 @@ function DotAndNameMatchup({
       <h4 className="text-center">Away</h4>
       <h4 className="text-center">Home</h4>
       <DotAndName
-        team={awayTeam}
+        data={data === undefined ? undefined : { team: data.awayTeam }}
         loadingFiller="Away Team"
         includeTeamLinks={includeTeamLinks}
       />
       <DotAndName
-        team={homeTeam}
+        data={data === undefined ? undefined : { team: data.homeTeam }}
         loadingFiller="Home Team"
         includeTeamLinks={includeTeamLinks}
       />

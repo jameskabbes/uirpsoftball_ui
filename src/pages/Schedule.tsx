@@ -8,7 +8,7 @@ import { ApiServiceResponseDataByStatus } from '../types';
 import { getSchedulePage } from '../services/apiServices';
 
 function Schedule() {
-  const { data, loading, status, refetch } = useApiCall(getSchedulePage, {});
+  const { data, status, refetch } = useApiCall(getSchedulePage, {});
 
   useEffect(() => {
     document.title = 'Schedule';

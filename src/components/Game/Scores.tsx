@@ -2,15 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { paths, operations, components } from '../../openapi_schema';
 import { Dot as TeamDot } from '../Team/Dot';
 import { Link as TeamLink } from '../Team/Link';
-import { Score } from './Score';
+import { HandleScoreChange, Score } from './Score';
+import { DataProps } from '../../types';
 
-interface ComponentProps {
-  game: components['schemas']['Game-Input'];
-  score: components['schemas']['Score'];
-}
-
-interface Props {
-  data: ComponentProps;
+interface Props
+  extends DataProps<{
+    game: components['schemas']['GameExport'];
+  }> {
   submitScore: CallableFunction;
 }
 
@@ -22,20 +20,26 @@ function Scores({ data, submitScore }: Props) {
   const [awayBase, setAwayBase] = useState<number | null>(null);
 
   useEffect(() => {
-    if (data !== null) {
-      if (data.score !== undefined) {
-        if (data.score.home !== undefined && data.score.away !== undefined) {
-          setHome(data.score.home);
-          setHomeBase(data.score.home);
-          setAway(data.score.away);
-          setAwayBase(data.score.away);
-        }
+    if (data !== undefined) {
+      if (
+        data.game.home_team_score !== null &&
+        data.game.away_team_score !== null
+      ) {
+        setHome(data.game.home_team_score);
+        setHomeBase(data.game.home_team_score);
+        setAway(data.game.away_team_score);
+        setAwayBase(data.game.away_team_score);
       }
     }
   }, [data]);
 
-  const handleScoreChange = (setState, e, minScore, maxScore) => {
-    const inputValue = parseInt(e.target.value, 10);
+  const handleScoreChange: HandleScoreChange = (
+    e,
+    setState,
+    minScore,
+    maxScore
+  ) => {
+    const inputValue = parseInt(e.target.value);
     if (isNaN(inputValue)) {
       setState(0);
     } else if (
@@ -54,7 +58,8 @@ function Scores({ data, submitScore }: Props) {
   };
 
   // upon submission, send POST request updating the score with formData
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     setHomeBase(home);
     setAwayBase(away);
     setToggleRecord(false);
@@ -83,7 +88,9 @@ function Scores({ data, submitScore }: Props) {
       </div>
 
       <div className="flex justify-center p-1 mt-2">
-        {data !== null && !toggleRecord && data.game.is_accepting_scores ? (
+        {data !== undefined &&
+        !toggleRecord &&
+        data.game.is_accepting_scores ? (
           <button
             onClick={() => {
               setToggleRecord(true);

@@ -24,8 +24,8 @@ function App(): JSX.Element {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/admin" element={<Admin />} />
-              <Route path="/team/:teamSlug" element={<Team />} />
-              <Route path="/game/:gameId" element={<Game />} />
+              <Route path="/teams/:teamSlug" element={<Team />} />
+              <Route path="/games/:gameId" element={<Game />} />
               <Route path="/schedule" element={<Schedule />} />
               <Route path="/standings" element={<Standings />} />
               <Route path="/rules" element={<Rules />} />
