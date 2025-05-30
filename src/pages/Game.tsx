@@ -76,22 +76,49 @@ function Game() {
                 submitScore={submitScore}
               />
             </div>
-            {/* <div className="mt-8">
+            <div className="mt-8">
               <DivisionCards
                 data={
                   apiData === undefined
                     ? undefined
-                    : {
-                        divisions: apiData.divisions,
-                        division_ids_ordered: apiData.division_ids_ordered,
-                        standings_by_division_id:
-                          apiData.standings_by_division_id,
-                        teams: apiData.teams,
-                        game: apiData.game,
-                      }
+                    : (() => {
+                        const homeDivisionId =
+                          apiData.game.home_team_id === null
+                            ? null
+                            : apiData.teams[apiData.game.home_team_id]
+                                ?.division_id ?? null;
+                        const awayDivisionId =
+                          apiData.game.away_team_id === null
+                            ? null
+                            : apiData.teams[apiData.game.away_team_id]
+                                ?.division_id ?? null;
+
+                        const division_ids_ordered: components['schemas']['DivisionExport']['id'][] =
+                          [];
+
+                        if (awayDivisionId !== null) {
+                          division_ids_ordered.push(awayDivisionId);
+                        }
+                        if (
+                          homeDivisionId !== null &&
+                          homeDivisionId !== awayDivisionId
+                        ) {
+                          division_ids_ordered.push(homeDivisionId);
+                        }
+
+                        return {
+                          divisions: apiData.divisions,
+                          division_ids_ordered,
+                          teams: apiData.teams,
+                          team_statistics: apiData.team_statistics,
+                          team_ids_ranked_by_division:
+                            apiData.team_ids_ranked_by_division,
+                          game: apiData.game,
+                        };
+                      })()
                 }
               />
-            </div> */}
+            </div>
           </div>
         </div>
       </>

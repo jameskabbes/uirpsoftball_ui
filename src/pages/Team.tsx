@@ -88,26 +88,32 @@ function Team() {
             })()}
             <div className="mt-8">
               <div className="grid grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto gap-4">
-                {/* <DivisionCard
+                <DivisionCard
                   data={
-                    apiData !== undefined && {
-                      division: apiData.division,
-                      teams: apiData.teams,
-                      teamIdsToBold: new Set([apiData.team_id]),
-                    }
+                    apiData === undefined
+                      ? undefined
+                      : {
+                          division: apiData.division,
+                          teams: apiData.teams,
+                          teamIdsToBold: new Set([apiData.team_id]),
+                          team_statistics: apiData.team_statistics,
+                          team_ids_ranked: apiData.team_ids_ranked,
+                        }
                   }
                 />
                 <Panels
                   data={
-                    apiData !== undefined && {
-                      game_known_ids: apiData.games_known_ids,
-                      game_tbd_ids: apiData.games_tbd_ids,
-                      games: apiData.games,
-                      teams: apiData.teams,
-                      locations: apiData.locations,
-                    }
+                    apiData === undefined
+                      ? undefined
+                      : {
+                          game_known_ids: apiData.games_known_ids,
+                          game_tbd_ids: apiData.games_unknown_ids,
+                          games: apiData.games,
+                          teams: apiData.teams,
+                          locations: apiData.locations,
+                        }
                   }
-                /> */}
+                />
               </div>
             </div>
           </div>

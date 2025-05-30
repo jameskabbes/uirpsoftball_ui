@@ -32,45 +32,66 @@ function Standings() {
                     : Object.keys(apiData.divisions).length
                 }
               >
-                {(apiData === null
+                {(apiData === undefined
                   ? Array.from({ length: config.defaultNDivisions }, () => null)
                   : apiData.division_ids_ordered
-                ).map((divisionId, index) => (
-                  <div
-                    className="mt-4"
-                    key={divisionId === null ? `index${index}` : divisionId}
-                  >
-                    <Division
-                      data={
-                        apiData === undefined
-                          ? undefined
-                          : {
-                              division: apiData.divisions[divisionId],
-                              standings:
-                                apiData.standings_by_division_id[divisionId],
-                              teams: apiData.teams_by_division_id[divisionId],
-                            }
-                      }
-                    />
-                  </div>
-                ))}
+                ).map((divisionId, index) => {
+                  const division =
+                    apiData === undefined || divisionId === null
+                      ? null
+                      : apiData.divisions[divisionId] ?? null;
+
+                  const teamIdsRanked =
+                    apiData === undefined || divisionId === null
+                      ? null
+                      : apiData.team_ids_ranked_by_division[divisionId] ?? null;
+
+                  if (
+                    apiData !== undefined &&
+                    (division === null || teamIdsRanked === null)
+                  ) {
+                    return null;
+                  } else {
+                    return (
+                      <div
+                        className="mt-4"
+                        key={divisionId === null ? `index${index}` : divisionId}
+                      >
+                        <Division
+                          data={
+                            apiData === undefined || divisionId === null
+                              ? undefined
+                              : {
+                                  division: division!,
+                                  teams: apiData.teams,
+                                  team_ids_ranked: teamIdsRanked!,
+                                  team_statistics: apiData.team_statistics,
+                                }
+                          }
+                        />
+                      </div>
+                    );
+                  }
+                })}
               </GridDiv>
             </div>
 
             <div className="max-w-sm mx-auto mt-8">
               <div className="card">
                 <h2>Seeding Parameters</h2>
-                {data === null ? (
+                {data === undefined ? (
                   <p>loading...</p>
                 ) : (
                   <ol>
-                    {data.seeding_parameters.map((seeding_parameter, index) => (
-                      <li key={seeding_parameter.id}>
-                        <p>
-                          {index + 1}. {seeding_parameter.name}
-                        </p>
-                      </li>
-                    ))}
+                    {apiData.seeding_parameters.map(
+                      (seeding_parameter, index) => (
+                        <li key={seeding_parameter.id}>
+                          <p>
+                            {index + 1}. {seeding_parameter.name}
+                          </p>
+                        </li>
+                      )
+                    )}
                   </ol>
                 )}
               </div>

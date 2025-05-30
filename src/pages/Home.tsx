@@ -74,7 +74,7 @@ function Home() {
                             }
                           : undefined
                       }
-                      roundId={obj === null ? index : obj.round}
+                      roundId={obj === null ? undefined : obj.round}
                     ></Panels>
                   </div>
                 )

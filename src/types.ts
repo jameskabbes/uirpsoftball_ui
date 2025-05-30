@@ -309,3 +309,13 @@ export type TeamExportsById = Record<
   components['schemas']['TeamExport']['id'],
   components['schemas']['TeamExport'] | undefined
 >;
+
+export type TeamStatisticExportsByTeamId = Record<
+  components['schemas']['TeamExport']['id'],
+  components['schemas']['TeamStatisticsExport'] | undefined
+>;
+
+export type DivisionExportsById = Record<
+  components['schemas']['DivisionExport']['id'],
+  components['schemas']['DivisionExport'] | undefined
+>;

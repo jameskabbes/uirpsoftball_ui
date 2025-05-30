@@ -3,56 +3,65 @@ import { DivisionCard } from './DivisionCard';
 import { GridDiv } from '../GridDiv';
 import { config } from '../../config/config';
 import { paths, operations, components } from '../../openapi_schema';
+import {
+  DataProps,
+  DivisionExportsById,
+  TeamExportsById,
+  TeamStatisticExportsByTeamId,
+} from '../../types';
 
-interface DataProps {
-  divisions: Record<
-    components['schemas']['DivisionExport']['id'],
-    components['schemas']['DivisionExport']
-  >;
-  division_ids_ordered: components['schemas']['DivisionExport']['id'][];
-  standings_by_division_id: Record<
-    components['schemas']['DivisionExport']['id'],
-    components['schemas']['TeamExport'][]
-  >;
-  teams: Record<components['schemas']['TeamID'], components['schemas']['Team']>;
-  game?: components['schemas']['Game-Input'];
-}
-
-interface Props {
-  data: DataProps | undefined;
-}
+interface Props
+  extends DataProps<{
+    divisions: DivisionExportsById;
+    division_ids_ordered: components['schemas']['DivisionExport']['id'][];
+    teams: TeamExportsById;
+    team_statistics: TeamStatisticExportsByTeamId;
+    team_ids_ranked_by_division: Record<
+      components['schemas']['DivisionExport']['id'],
+      components['schemas']['TeamExport']['id'][] | undefined
+    >;
+    game?: components['schemas']['GameExport'];
+  }> {}
 
 function DivisionCards({ data }: Props) {
   return (
     <div className="max-w-3xl mx-auto">
       <GridDiv
         n={
-          data === null
+          data === undefined
             ? config.defaultNDivisionsPerGame
             : Object.keys(data.divisions).length
         }
       >
-        {(data === null
+        {(data === undefined
           ? Array.from({ length: config.defaultNDivisionsPerGame }, () => null)
           : data.division_ids_ordered
         ).map(
-          (divisionID: components['schemas']['DivisionID'] | null, index) => (
+          (
+            divisionID: components['schemas']['DivisionExport']['id'] | null,
+            index
+          ) => (
             <DivisionCard
-              key={data === null ? `index${index}` : divisionID}
+              key={divisionID === null ? `index${index}` : divisionID}
               data={
-                data === null
-                  ? null
-                  : {
-                      division: data.divisions[divisionID],
-                      standings: data.standings_by_division_id[divisionID],
+                divisionID !== null && data !== undefined
+                  ? {
+                      division: data.divisions[divisionID] ?? null,
                       teams: data.teams,
-                      teamIdsToBold: data.game
-                        ? new Set([
-                            data.game.home_team_id,
-                            data.game.away_team_id,
-                          ])
-                        : new Set(),
+                      team_statistics: data.team_statistics,
+                      team_ids_ranked:
+                        data.team_ids_ranked_by_division[divisionID] ?? [],
+                      teamIdsToBold:
+                        data.game === undefined
+                          ? new Set()
+                          : new Set(
+                              [
+                                data.game.home_team_id,
+                                data.game.away_team_id,
+                              ].filter((id) => id !== null)
+                            ),
                     }
+                  : undefined
               }
             />
           )

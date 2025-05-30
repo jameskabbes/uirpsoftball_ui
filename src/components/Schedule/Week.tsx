@@ -18,7 +18,7 @@ interface Props
     teams: TeamExportsById;
     game_ids: components['schemas']['GameExport']['id'][];
   }> {
-  roundId: components['schemas']['GameExport']['round_id'];
+  roundId: components['schemas']['GameExport']['round_id'] | undefined;
   admin?: boolean;
   includeLink?: boolean;
 }
@@ -54,10 +54,12 @@ function Panels({ data, roundId, admin = false, includeLink = true }: Props) {
         <div className="card px-2 py-1 mx-1 my-4">
           <h2 className="text-center mb-0">
             <>
-              {/* { data === undefined ? 'loading...': }
-              {data === undefined ? 'loading...' : `Week ${roundId}`}
-              {date === undefined  null &&
-                ' - ' + date.toLocaleString({ month: 'long', day: 'numeric' })} */}
+              {data !== undefined && roundId !== undefined && date !== null
+                ? 'Week ' +
+                  roundId +
+                  ' - ' +
+                  date.toLocaleString({ month: 'long', day: 'numeric' })
+                : 'loading...'}
             </>
           </h2>
         </div>

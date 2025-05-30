@@ -3,6 +3,11 @@ import { Dot as TeamDot } from '../Team/Dot';
 import { DotAndName } from '../Team/DotAndName';
 import { config } from '../../config/config';
 import { paths, operations, components } from '../../openapi_schema';
+import {
+  DataProps,
+  TeamExportsById,
+  TeamStatisticExportsByTeamId,
+} from '../../types';
 
 function CustomGrid({ columns, children }) {
   const gridStyle = {
@@ -14,9 +19,8 @@ function CustomGrid({ columns, children }) {
   return <div style={gridStyle}>{children}</div>;
 }
 
-type TeamID = components['schemas']['TeamID'];
-type GameID = components['schemas']['GameID'];
-type Standing = components['schemas']['Standing'];
+type TeamID = components['schemas']['TeamExport']['id'];
+type GameID = components['schemas']['GameExport']['id'];
 
 interface TeamRecordsByOpponent {
   [teamID: TeamID]: [number, number];
@@ -26,14 +30,12 @@ interface HeadToHeadRecords {
 }
 type HeadToHeadMatchup = [TeamID, TeamID];
 
-interface DataProps {
-  teams: Record<TeamID, components['schemas']['Team']>;
-  standings: Standing[];
-}
-
-interface Props {
-  data: DataProps;
-}
+interface Props
+  extends DataProps<{
+    teams: TeamExportsById;
+    team_statistics: TeamStatisticExportsByTeamId;
+    team_ids_ranked: components['schemas']['TeamExport']['id'][];
+  }> {}
 
 function HeadToHeadMatrix({ data }: Props) {
   const [headToHeadRecords, setHeadToHeadRecords] =

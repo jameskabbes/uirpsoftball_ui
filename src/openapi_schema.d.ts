@@ -481,6 +481,18 @@ export interface components {
                 [key: string]: components["schemas"]["TeamExport"] | undefined;
             };
             location: components["schemas"]["LocationExport"] | null;
+            /** Divisions */
+            divisions: {
+                [key: string]: components["schemas"]["DivisionExport"] | undefined;
+            };
+            /** Team Statistics */
+            team_statistics: {
+                [key: string]: components["schemas"]["TeamStatisticsExport"] | undefined;
+            };
+            /** Team Ids Ranked By Division */
+            team_ids_ranked_by_division: {
+                [key: string]: number[] | undefined;
+            };
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -509,6 +521,14 @@ export interface components {
             };
             /** Division Ids Ordered */
             division_ids_ordered: number[];
+            /** Team Statistics */
+            team_statistics: {
+                [key: string]: components["schemas"]["TeamStatisticsExport"] | undefined;
+            };
+            /** Team Ids Ranked By Division */
+            team_ids_ranked_by_division: {
+                [key: string]: number[] | undefined;
+            };
         };
         /** IsAcceptingScoresUpdate */
         IsAcceptingScoresUpdate: {
@@ -577,6 +597,22 @@ export interface components {
             teams: {
                 [key: string]: components["schemas"]["TeamExport"] | undefined;
             };
+            /** Divisions */
+            divisions: {
+                [key: string]: components["schemas"]["DivisionExport"] | undefined;
+            };
+            /** Division Ids Ordered */
+            division_ids_ordered: number[];
+            /** Team Statistics */
+            team_statistics: {
+                [key: string]: components["schemas"]["TeamStatisticsExport"] | undefined;
+            };
+            /** Team Ids Ranked By Division */
+            team_ids_ranked_by_division: {
+                [key: string]: number[] | undefined;
+            };
+            /** Seeding Parameters */
+            seeding_parameters: components["schemas"]["SeedingParameterExport"][];
         };
         /** TeamExport */
         TeamExport: {
@@ -590,6 +626,8 @@ export interface components {
             slug: string;
             /** Color */
             color: string | null;
+            /** Seed */
+            seed: number;
         };
         /** TeamResponse */
         TeamResponse: {
@@ -614,6 +652,21 @@ export interface components {
             division: components["schemas"]["DivisionExport"];
             /** Featured Game Id */
             featured_game_id: number | null;
+            /** Team Statistics */
+            team_statistics: {
+                [key: string]: components["schemas"]["TeamStatisticsExport"] | undefined;
+            };
+            /** Team Ids Ranked */
+            team_ids_ranked: number[];
+        };
+        /** TeamStatisticsExport */
+        TeamStatisticsExport: {
+            /** Run Differential */
+            run_differential: number;
+            /** Game Ids Won */
+            game_ids_won: number[];
+            /** Game Ids Lost */
+            game_ids_lost: number[];
         };
         /** TournamentExport */
         TournamentExport: {
