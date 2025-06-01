@@ -27,6 +27,10 @@ function Team() {
   });
 
   useEffect(() => {
+    refetch();
+  }, [teamSlug]);
+
+  useEffect(() => {
     if (data !== undefined) {
       if (status === 200) {
         const apiData = data as ApiServiceResponseDataByStatus<

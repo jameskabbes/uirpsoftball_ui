@@ -104,17 +104,21 @@ function Home() {
                 })}
           </div> */}
 
-          {/* <h2 className="text-center mt-4">Standings</h2>
+          <h2 className="text-center mt-4">Standings</h2>
           <DivisionCards
             data={
-              data !== undefined && {
-                divisions: data.divisions,
-                division_ids_ordered: data.division_ids_ordered,
-                standings_by_division_id: data.standings_by_division_id,
-                teams: data.teams,
-              }
+              data === undefined
+                ? undefined
+                : {
+                    divisions: data.divisions,
+                    division_ids_ordered: data.division_ids_ordered,
+                    teams: data.teams,
+                    team_statistics: data.team_statistics,
+                    team_ids_ranked_by_division:
+                      data.team_ids_ranked_by_division,
+                  }
             }
-          /> */}
+          />
         </div>
       </div>
     );

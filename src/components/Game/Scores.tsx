@@ -90,7 +90,9 @@ function Scores({ data, submitScore }: Props) {
       <div className="flex justify-center p-1 mt-2">
         {data !== undefined &&
         !toggleRecord &&
-        data.game.is_accepting_scores ? (
+        data.game.is_accepting_scores &&
+        data.game.home_team_id !== null &&
+        data.game.away_team_id ? (
           <button
             onClick={() => {
               setToggleRecord(true);
