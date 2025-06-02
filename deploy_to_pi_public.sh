@@ -1,1 +1,2 @@
-scp -r dist/ pi_public:/home/pi/Repos/softball/frontend
+scp -r dist/ pi_public:/home/pi/Repos/uirpsoftball/uirpsoftball_ui/
+
