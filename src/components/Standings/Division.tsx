@@ -18,7 +18,7 @@ interface Props
 
 function Division({ data }: Props) {
   return (
-    <div className="panels space-y-2 max-w-lg">
+    <div className="panels space-y-2 max-w-xl">
       <DivisionCard
         data={
           data === undefined
@@ -32,13 +32,17 @@ function Division({ data }: Props) {
               }
         }
       />
-      {/* <HeadToHeadMatrix
+      <HeadToHeadMatrix
         data={
-          data === null
-            ? null
-            : { teams: data.teams, standings: data.standings }
+          data === undefined
+            ? undefined
+            : {
+                teams: data.teams,
+                team_ids_ranked: data.team_ids_ranked,
+                team_statistics: data.team_statistics,
+              }
         }
-      /> */}
+      />
     </div>
   );
 }

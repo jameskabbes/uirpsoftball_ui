@@ -9,7 +9,12 @@ import {
   TeamStatisticExportsByTeamId,
 } from '../../types';
 
-function CustomGrid({ columns, children }) {
+interface CustomGridProps {
+  columns: number;
+  children: React.ReactNode;
+}
+
+function CustomGrid({ columns, children }: CustomGridProps) {
   const gridStyle = {
     display: 'grid',
     gridTemplateColumns: `repeat(${columns}, minmax(25px, 1fr))`,
@@ -38,59 +43,84 @@ interface Props
   }> {}
 
 function HeadToHeadMatrix({ data }: Props) {
-  const [headToHeadRecords, setHeadToHeadRecords] =
-    useState<null | HeadToHeadRecords>(null);
+  const [headToHeadRecords, setHeadToHeadRecords] = useState<
+    undefined | HeadToHeadRecords
+  >(undefined);
   const [headToHeadMatchups, setHeadToHeadMatchups] = useState<
-    null | HeadToHeadMatchup[]
-  >(null);
+    undefined | HeadToHeadMatchup[]
+  >(undefined);
 
   useEffect(() => {
-    if (data !== null) {
+    if (data !== undefined) {
       let matchups: HeadToHeadMatchup[] = [];
       let records: HeadToHeadRecords = {};
 
       let game_ids_won_by_team: Record<TeamID, Set<GameID>> = {};
       let game_ids_lost_by_team: Record<TeamID, Set<GameID>> = {};
-      data.standings.map((standing) => {
-        game_ids_won_by_team[standing.team_id] = new Set(standing.game_ids_won);
-        game_ids_lost_by_team[standing.team_id] = new Set(
-          standing.game_ids_lost
-        );
+
+      data.team_ids_ranked.map((team_id) => {
+        const team_statistics = data.team_statistics[team_id];
+
+        if (team_statistics !== undefined) {
+          game_ids_won_by_team[team_id] = new Set(team_statistics.game_ids_won);
+          game_ids_lost_by_team[team_id] = new Set(
+            team_statistics.game_ids_lost
+          );
+        }
       });
 
-      data.standings.map((team_standing) => {
-        records[team_standing.team_id] = {};
+      data.team_ids_ranked.map(
+        (team_id: components['schemas']['TeamExport']['id']) => {
+          records[team_id] = {};
+          let record_by_opponent: TeamRecordsByOpponent = {};
 
-        let record_by_opponent = {};
+          data.team_ids_ranked.map((opponent_team_id) => {
+            matchups.push([team_id, opponent_team_id]);
 
-        data.standings.map((opponent_standing) => {
-          matchups.push([team_standing.team_id, opponent_standing.team_id]);
+            let wins_against_opponent = 0;
 
-          let wins_against_opponent = 0;
-          game_ids_won_by_team[team_standing.team_id].forEach((gameID) => {
-            if (game_ids_lost_by_team[opponent_standing.team_id].has(gameID)) {
-              wins_against_opponent += 1;
-            }
+            (game_ids_won_by_team[team_id] === undefined
+              ? []
+              : game_ids_won_by_team[team_id]
+            ).forEach((gameID) => {
+              if (
+                (game_ids_lost_by_team[opponent_team_id] ?? new Set()).has(
+                  gameID
+                )
+              ) {
+                wins_against_opponent += 1;
+              }
+            });
+
+            let losses_against_opponent = 0;
+            (game_ids_lost_by_team[team_id] === undefined
+              ? []
+              : game_ids_lost_by_team[team_id]
+            ).forEach((gameID) => {
+              if (
+                (game_ids_won_by_team[opponent_team_id] ?? new Set()).has(
+                  gameID
+                )
+              ) {
+                losses_against_opponent += 1;
+              }
+            });
+
+            record_by_opponent[opponent_team_id] = [
+              wins_against_opponent,
+              losses_against_opponent,
+            ];
           });
 
-          let losses_against_opponent = 0;
-          game_ids_lost_by_team[team_standing.team_id].forEach((gameID) => {
-            if (game_ids_won_by_team[opponent_standing.team_id].has(gameID)) {
-              losses_against_opponent += 1;
-            }
-          });
-
-          record_by_opponent[opponent_standing.team_id] = [
-            wins_against_opponent,
-            losses_against_opponent,
-          ];
-        });
-
-        records[team_standing.team_id] = record_by_opponent;
-      });
+          records[team_id] = record_by_opponent;
+        }
+      );
 
       setHeadToHeadMatchups(matchups);
       setHeadToHeadRecords(records);
+
+      console.log(matchups);
+      console.log(records);
     }
   }, [data]);
 
@@ -104,47 +134,78 @@ function HeadToHeadMatrix({ data }: Props) {
                 <strong>Head to Head</strong>
               </h6>
             </div>
-            {(data === null
+            {(data === undefined
               ? Array.from(
                   { length: config.defaultNTeamsPerDivision },
                   () => null
                 )
-              : data.standings
-            ).map((standing: Standing | null, index) => (
-              <p key={standing === null ? `index${index}` : standing.team_id}>
-                <DotAndName
-                  team={data === null ? null : data.teams[standing.team_id]}
-                />
-              </p>
-            ))}
+              : data.team_ids_ranked
+            ).map(
+              (
+                team_id:
+                  | components['schemas']['TeamExport']['division_id']
+                  | null,
+                index
+              ) => (
+                <p key={team_id === null ? `index${index}` : team_id}>
+                  <DotAndName
+                    data={
+                      data === undefined
+                        ? undefined
+                        : {
+                            team:
+                              team_id === null
+                                ? null
+                                : data.teams[team_id] ?? null,
+                          }
+                    }
+                  />
+                </p>
+              )
+            )}
           </div>
           <div className="flex flex-col overflow-x-auto whitespace-nowrap">
             <CustomGrid
               columns={
-                data === null
+                data === undefined
                   ? config.defaultNTeamsPerDivision
-                  : data.standings.length
+                  : data.team_ids_ranked.length
               }
             >
               {/* load the dots */}
-              {(data === null
+              {(data === undefined
                 ? Array.from(
                     { length: config.defaultNTeamsPerDivision },
                     () => null
                   )
-                : data.standings
-              ).map((standing: Standing | null, index) => (
-                <span
-                  key={data === null ? `index${index}` : standing.team_id}
-                  className="text-center"
-                >
-                  <TeamDot
-                    team={data === null ? null : data.teams[standing.team_id]}
-                  />
-                </span>
-              ))}
+                : data.team_ids_ranked
+              ).map(
+                (
+                  team_id: components['schemas']['TeamExport']['id'] | null,
+                  index
+                ) => (
+                  <span
+                    key={team_id === null ? `index${index}` : team_id}
+                    className="text-center"
+                  >
+                    <TeamDot
+                      data={
+                        data === undefined
+                          ? undefined
+                          : {
+                              team:
+                                team_id === null
+                                  ? null
+                                  : data.teams[team_id] ?? null,
+                            }
+                      }
+                    />
+                  </span>
+                )
+              )}
               {/* load the head to head records */}
-              {(headToHeadMatchups === null || headToHeadRecords === null
+              {(headToHeadMatchups === undefined ||
+              headToHeadRecords === undefined
                 ? Array.from(
                     { length: config.defaultNTeamsPerDivision ** 2 },
                     () => null
@@ -153,11 +214,12 @@ function HeadToHeadMatrix({ data }: Props) {
               ).map((matchup: null | [number, number], index) => {
                 let text: string = '';
                 let color: string = '';
-                let record_against_opponent = [0, 0];
+                let record_against_opponent: [number, number] = [0, 0];
 
-                if (matchup !== null) {
-                  record_against_opponent =
-                    headToHeadRecords[matchup[0]][matchup[1]];
+                if (matchup !== null && headToHeadRecords !== undefined) {
+                  record_against_opponent = headToHeadRecords?.[matchup[0]]?.[
+                    matchup[1]
+                  ] ?? [0, 0];
                   if (record_against_opponent[0] > record_against_opponent[1]) {
                     color = '#b9fcb3'; //green
                   } else if (
@@ -200,7 +262,9 @@ function HeadToHeadMatrix({ data }: Props) {
                     className="text-center border-2 border-custom_light dark:border-custom_dark rounded-md"
                     style={{ borderColor: color }}
                   >
-                    <p>{data === null || text === '' ? <>&nbsp;</> : text}</p>
+                    <p>
+                      {data === undefined || text === '' ? <>&nbsp;</> : text}
+                    </p>
                   </div>
                 );
               })}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useApiCall } from '../utils/api';
 import { useParams } from 'react-router-dom';
 import { NotFound } from '../components/Team/NotFound';
@@ -26,8 +26,15 @@ function Team() {
     },
   });
 
+  const isFirstRender = useRef(true);
+
   useEffect(() => {
-    refetch();
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    } else {
+      refetch();
+    }
   }, [teamSlug]);
 
   useEffect(() => {

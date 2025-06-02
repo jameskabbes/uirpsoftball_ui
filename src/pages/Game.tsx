@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { callApi, useApiCall } from '../utils/api';
 import { NotFound } from '../components/Game/NotFound';
@@ -21,6 +21,17 @@ function Game() {
       game_id: gameId,
     },
   });
+
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    } else {
+      refetch();
+    }
+  }, [gameId]);
 
   useEffect(() => {
     if (data !== undefined && status === 200) {
