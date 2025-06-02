@@ -118,9 +118,6 @@ function HeadToHeadMatrix({ data }: Props) {
 
       setHeadToHeadMatchups(matchups);
       setHeadToHeadRecords(records);
-
-      console.log(matchups);
-      console.log(records);
     }
   }, [data]);
 
