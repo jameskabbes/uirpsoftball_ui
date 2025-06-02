@@ -32,7 +32,6 @@ export async function callApi<TResponseData, TRequestData = any>({
 
     console.log(method, url);
     const response = await apiClient.request<TResponseData>(requestConfig);
-    console.log('Response headers:', response.headers);
 
     return response;
   } catch (error) {
