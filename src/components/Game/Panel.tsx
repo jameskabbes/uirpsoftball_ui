@@ -28,8 +28,8 @@ interface Props
   includeTime?: boolean;
   includeLink?: boolean;
   displayId?: boolean;
-  homeTeamFiller?: string;
-  awayTeamFiller?: string;
+  homeTeamFiller?: string | null;
+  awayTeamFiller?: string | null;
 }
 
 function Panel({
@@ -139,7 +139,8 @@ function Panel({
                           if (data.game.away_team_id === null) return 'TBD';
                           const team = data.teams[data.game.away_team_id];
                           if (team === undefined)
-                            return awayTeamFiller !== undefined
+                            return awayTeamFiller !== undefined &&
+                              awayTeamFiller !== null
                               ? awayTeamFiller
                               : 'Away Team';
                           return team.name;
@@ -177,7 +178,8 @@ function Panel({
                           if (data.game.home_team_id === null) return 'TBD';
                           const team = data.teams[data.game.home_team_id];
                           if (team === undefined)
-                            return homeTeamFiller !== undefined
+                            return homeTeamFiller !== undefined &&
+                              homeTeamFiller !== null
                               ? homeTeamFiller
                               : 'Home Team';
                           return team.name;

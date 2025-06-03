@@ -37,10 +37,7 @@ function Card({ data, submitScore }: Props) {
           game,
           location,
           game.home_team_id !== null ? teams[game.home_team_id] ?? null : null,
-          game.away_team_id !== null ? teams[game.away_team_id] ?? null : null,
-          game.officiating_team_id !== null
-            ? teams[game.officiating_team_id] ?? null
-            : null
+          game.away_team_id !== null ? teams[game.away_team_id] ?? null : null
         ),
       ]);
       downloadCalendar(icsContent);

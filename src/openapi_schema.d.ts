@@ -123,40 +123,6 @@ export interface paths {
         patch: operations["update_score_games__game_id__score__patch"];
         trace?: never;
     };
-    "/games/assign-matchups/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Assign Matchups */
-        post: operations["assign_matchups_games_assign_matchups__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/games/reprocess-all-scores/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Reprocess All Scores */
-        post: operations["reprocess_all_scores_games_reprocess_all_scores__post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/games/{game_id}/is-accepting-scores/": {
         parameters: {
             query?: never;
@@ -429,10 +395,44 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/pages/admin/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Admin */
+        get: operations["admin_pages_admin__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AdminResponse */
+        AdminResponse: {
+            /** Games */
+            games: {
+                [key: string]: components["schemas"]["GameExport"] | undefined;
+            };
+            /** Teams */
+            teams: {
+                [key: string]: components["schemas"]["TeamExport"] | undefined;
+            };
+            /** Locations */
+            locations: {
+                [key: string]: components["schemas"]["LocationExport"] | undefined;
+            };
+            /** Game Ids And Rounds */
+            game_ids_and_rounds: components["schemas"]["GameIdsAndRounds"][];
+        };
         /** DivisionExport */
         DivisionExport: {
             /** Id */
@@ -578,9 +578,9 @@ export interface components {
         /** ScoreUpdate */
         ScoreUpdate: {
             /** Home Team Score */
-            home_team_score?: number | null;
+            home_team_score: number | null;
             /** Away Team Score */
-            away_team_score?: number | null;
+            away_team_score: number | null;
         };
         /** SeedingParameterExport */
         SeedingParameterExport: {
@@ -936,7 +936,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GameExport"];
+                    "application/json": unknown;
                 };
             };
             /** @description Validation Error */
@@ -946,46 +946,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    assign_matchups_games_assign_matchups__post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
-    };
-    reprocess_all_scores_games_reprocess_all_scores__post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
                 };
             };
         };
@@ -1468,6 +1428,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StandingsResponse"];
+                };
+            };
+        };
+    };
+    admin_pages_admin__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminResponse"];
                 };
             };
         };

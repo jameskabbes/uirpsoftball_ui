@@ -36,10 +36,7 @@ function Panels({ data }: Props) {
             game,
             game.location_id ? locations[game.location_id] ?? null : null,
             game.home_team_id ? teams[game.home_team_id] ?? null : null,
-            game.away_team_id ? teams[game.away_team_id] ?? null : null,
-            game.officiating_team_id
-              ? teams[game.officiating_team_id] ?? null
-              : null
+            game.away_team_id ? teams[game.away_team_id] ?? null : null
           )
         )
       );

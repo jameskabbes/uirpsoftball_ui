@@ -19,14 +19,6 @@ export const patchGameIsAcceptingScores = createApiService(
   'patch'
 );
 
-export const assignMatchups = createApiService(
-  '/games/assign-matchups/',
-  'post'
-);
-export const reprocessAllScores = createApiService(
-  '/games/reprocess-all-scores/',
-  'post'
-);
 export const getLocations = createApiService('/locations/', 'get');
 export const getLocationById = createApiService(
   '/locations/{location_id}/',
@@ -60,3 +52,4 @@ export const getGamePage = createApiService('/pages/game/{game_id}/', 'get');
 export const getSchedulePage = createApiService('/pages/schedule/', 'get');
 export const getHomePage = createApiService('/pages/', 'get');
 export const getStandingsPage = createApiService('/pages/standings/', 'get');
+export const getAdminPage = createApiService('/pages/admin/', 'get');
