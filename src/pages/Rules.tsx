@@ -74,6 +74,12 @@ function Rules() {
                   </p>
                 </li>
                 <li>
+                  <h6 className="inline font-semibold">Max 10 runs: </h6>
+                  <p className="inline">
+                    A team can only score a maximum of 10 runs in a half inning
+                  </p>
+                </li>
+                <li>
                   <h6 className="inline font-semibold">Slugfest: </h6>
                   <p className="inline">
                     All tie games will be determined by Slugfest
@@ -153,6 +159,12 @@ function Rules() {
                       • Games that are shortened due to weather will be counted
                       if 4+ innings have been completed (or 3.5 with home team
                       leading)
+                    </p>
+                  </li>
+                  <li>
+                    <p>
+                      • A team can only score a maximum of 10 runs in a half
+                      inning. After 10 runs are scored, the half inning is over.
                     </p>
                   </li>
                 </ol>
