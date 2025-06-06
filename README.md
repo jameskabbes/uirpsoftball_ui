@@ -1,4 +1,3 @@
-# UIRP Softball League
+# uirpsoftball_ui
 
-## notes
-standings by division
+React application for uirpsoftball
