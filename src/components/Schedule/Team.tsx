@@ -18,7 +18,7 @@ interface Props
     locations: LocationExportsById;
     teams: TeamExportsById;
     game_known_ids: components['schemas']['GameExport']['id'][];
-    game_tbd_ids: components['schemas']['GameExport']['id'][];
+    game_unknown_ids: components['schemas']['GameExport']['id'][];
   }> {}
 
 function Panels({ data }: Props) {
@@ -78,12 +78,14 @@ function Panels({ data }: Props) {
               />
               <BasePanels
                 data={{
-                  game_ids: data.game_tbd_ids,
+                  game_ids: data.game_unknown_ids,
                   games: data.games,
                   teams: data.teams,
                   locations: data.locations,
                 }}
                 includeTime={false}
+                includeDate={true}
+                includeLink={false}
               />
             </>
           )}
