@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { paths, operations, components } from '../../openapi_schema';
 import { Panel as GamePanel } from '../Game/Panel';
 import { Dot } from '../Team/Dot';
@@ -15,9 +15,9 @@ interface Props
   extends DataProps<{
     tournament: components['schemas']['TournamentExport'];
     tournament_games: Record<
-      number,
+      components['schemas']['TournamentGameExport']['bracket_id'],
       Record<
-        components['schemas']['GameExport']['round_id'],
+        components['schemas']['TournamentGameExport']['round'],
         components['schemas']['TournamentGameExport'][]
       >
     >;
@@ -28,20 +28,6 @@ interface Props
 
 function Tournament({ data }: Props) {
   // get bracket ids
-
-  const [bracketIds, setBracketIds] = React.useState<
-    Extract<keyof NonNullable<Props['data']>['tournament_games'], number>[]
-  >([]);
-
-  useEffect(() => {
-    if (data !== undefined) {
-      let ids = Object.keys(data.tournament_games).map(Number);
-      ids.sort((a, b) => a - b);
-      setBracketIds(
-        ids as Extract<keyof typeof data.tournament_games, number>[]
-      );
-    }
-  }, [data]);
 
   function getMaxRound(bracket: Record<number, any>) {
     const rounds = Object.keys(bracket).map(Number);
@@ -56,65 +42,74 @@ function Tournament({ data }: Props) {
       <div className="overflow-x-auto">
         {data !== undefined && (
           <>
-            {bracketIds.map((bracketId) => {
-              const bracket = data.tournament_games[bracketId];
+            {Object.keys(data.tournament_games)
+              .map(Number) // 1) Convert string keys to numbers
+              .sort((a, b) => a - b) // 2) Sort them numerically
+              .map(
+                (
+                  bracketId: components['schemas']['TournamentGameExport']['bracket_id']
+                ) => {
+                  const bracket = data.tournament_games[bracketId];
 
-              if (bracket === undefined) return null;
-              const maxRound = getMaxRound(bracket);
+                  if (bracket === undefined) return null;
+                  const maxRound = getMaxRound(bracket);
 
-              return (
-                <div className="flex flex-row">
-                  <div
-                    className="py-2"
-                    key={`bracket${bracketId}`}
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: `repeat(${maxRound}, 1fr)`,
-                      justifyContent: 'center',
-                      alignContent: 'center',
-                    }}
-                  >
-                    {Array.from({ length: maxRound }, (_, round_index) => {
-                      const round = bracket[round_index + 1];
-                      return (
-                        <div
-                          key={round_index}
-                          className="flex flex-col justify-around w-80"
-                        >
-                          {round !== undefined &&
-                            round.map((tournament_game, game_index) => {
-                              const game = data.games[tournament_game.game_id];
-                              if (!game) return null;
-                              return (
-                                <GamePanel
-                                  key={game.id}
-                                  data={{
-                                    game,
-                                    teams: data.teams,
-                                    location:
-                                      game.location_id === null
-                                        ? null
-                                        : data.locations[game.location_id] ??
-                                          null,
-                                  }}
-                                  displayId={true}
-                                  includeDate={true}
-                                  awayTeamFiller={
-                                    tournament_game.away_team_filler
-                                  }
-                                  homeTeamFiller={
-                                    tournament_game.home_team_filler
-                                  }
-                                />
-                              );
-                            })}
-                        </div>
-                      );
-                    })}{' '}
-                  </div>
-                </div>
-              );
-            })}
+                  return (
+                    <div className="flex flex-row">
+                      <div
+                        className="py-2"
+                        key={`bracket${bracketId}`}
+                        style={{
+                          display: 'grid',
+                          gridTemplateColumns: `repeat(${maxRound}, 1fr)`,
+                          justifyContent: 'center',
+                          alignContent: 'center',
+                        }}
+                      >
+                        {Array.from({ length: maxRound }, (_, round_index) => {
+                          const round = bracket[round_index + 1];
+                          return (
+                            <div
+                              key={round_index}
+                              className="flex flex-col justify-around w-80"
+                            >
+                              {round !== undefined &&
+                                round.map((tournament_game, game_index) => {
+                                  const game =
+                                    data.games[tournament_game.game_id];
+                                  if (!game) return null;
+                                  return (
+                                    <GamePanel
+                                      key={game.id}
+                                      data={{
+                                        game,
+                                        teams: data.teams,
+                                        location:
+                                          game.location_id === null
+                                            ? null
+                                            : data.locations[
+                                                game.location_id
+                                              ] ?? null,
+                                      }}
+                                      displayId={true}
+                                      includeDate={true}
+                                      awayTeamFiller={
+                                        tournament_game.away_team_filler
+                                      }
+                                      homeTeamFiller={
+                                        tournament_game.home_team_filler
+                                      }
+                                    />
+                                  );
+                                })}
+                            </div>
+                          );
+                        })}{' '}
+                      </div>
+                    </div>
+                  );
+                }
+              )}
           </>
         )}
       </div>
