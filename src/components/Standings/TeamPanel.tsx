@@ -17,7 +17,7 @@ function TeamPanel({ data }: Props) {
       left={[
         <>
           <p
-            style={{ width: '.5rem' }}
+            style={{ width: '.75rem' }}
             className={data?.bold ? 'font-bold' : ''}
           >
             {data === undefined ? '' : data.team.seed}
@@ -25,11 +25,9 @@ function TeamPanel({ data }: Props) {
           <TeamDot
             data={data === undefined ? undefined : { team: data.team }}
           />
-          <div className="flex flex-row">
-            <p className={data?.bold ? 'font-bold' : ''}>
-              {data === undefined ? 'Team' : data.team.name}
-            </p>
-          </div>
+          <p className={data?.bold ? 'font-bold' : ''}>
+            {data === undefined ? 'Team' : data.team.name}
+          </p>
         </>,
       ]}
       right={[
