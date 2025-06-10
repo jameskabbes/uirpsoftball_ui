@@ -50,9 +50,12 @@ function Panel({
 
   useEffect(() => {
     if (data !== undefined) {
-      if (data.location !== null) {
-        setDate(getDate(data.game.datetime, data.location.time_zone));
-      }
+      setDate(
+        getDate(
+          data.game.datetime,
+          data.location !== null ? data.location.time_zone : 'UTC'
+        )
+      );
       // bold the team name that won the game
       if (
         data.game.home_team_score !== null &&
@@ -136,11 +139,16 @@ function Panel({
                       >
                         {(() => {
                           if (data === undefined) return 'Away Team';
-                          if (data.game.away_team_id === null) return 'TBD';
+                          if (data.game.away_team_id === null) {
+                            if (awayTeamFiller) {
+                              return awayTeamFiller;
+                            } else {
+                              return 'TBD';
+                            }
+                          }
                           const team = data.teams[data.game.away_team_id];
                           if (team === undefined)
-                            return awayTeamFiller !== undefined &&
-                              awayTeamFiller !== null
+                            return awayTeamFiller
                               ? awayTeamFiller
                               : 'Away Team';
                           return team.name;
@@ -175,11 +183,16 @@ function Panel({
                       >
                         {(() => {
                           if (data === undefined) return 'Home Team';
-                          if (data.game.home_team_id === null) return 'TBD';
+                          if (data.game.home_team_id === null) {
+                            if (homeTeamFiller) {
+                              return homeTeamFiller;
+                            } else {
+                              return 'TBD';
+                            }
+                          }
                           const team = data.teams[data.game.home_team_id];
                           if (team === undefined)
-                            return homeTeamFiller !== undefined &&
-                              homeTeamFiller !== null
+                            return homeTeamFiller
                               ? homeTeamFiller
                               : 'Home Team';
                           return team.name;
