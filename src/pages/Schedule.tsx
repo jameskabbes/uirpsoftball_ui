@@ -52,7 +52,7 @@ function Schedule() {
               )
             )}
           </div>
-          {/* <h1 className="text-center mt-8">Tournaments</h1>
+          <h1 className="text-center mt-8">Tournaments</h1>
           <div className="flex flex-col space-y-6">
             {apiData === undefined
               ? undefined
@@ -62,8 +62,33 @@ function Schedule() {
                       <Tournament
                         data={{
                           tournament: tournament,
-                          tournament_games:
-                            apiData.tournament_games[tournament.id] || {},
+                          tournament_games: (() => {
+                            const games =
+                              apiData.tournament_games[tournament.id];
+                            if (!games) return {};
+
+                            return Object.entries(games).reduce(
+                              (bracketAcc, [bracketIdStr, bracketGames]) => {
+                                const bracketId = Number(bracketIdStr);
+
+                                if (bracketGames) {
+                                  bracketAcc[bracketId] = Object.entries(
+                                    bracketGames
+                                  ).reduce(
+                                    (roundAcc, [roundIdStr, roundGames]) => {
+                                      const roundId = Number(roundIdStr);
+                                      roundAcc[roundId] = roundGames || [];
+                                      return roundAcc;
+                                    },
+                                    {} as Record<number, any[]>
+                                  );
+                                }
+
+                                return bracketAcc;
+                              },
+                              {} as Record<number, Record<number, any[]>>
+                            );
+                          })(),
                           games: apiData.games,
                           teams: apiData.teams,
                           locations: apiData.locations,
@@ -72,7 +97,7 @@ function Schedule() {
                     </div>
                   );
                 })}
-          </div> */}
+          </div>
         </div>
       </div>
     );
