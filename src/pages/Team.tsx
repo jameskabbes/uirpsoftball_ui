@@ -117,8 +117,8 @@ function Team() {
                     apiData === undefined
                       ? undefined
                       : {
-                          game_known_ids: apiData.games_known_ids,
-                          game_tbd_ids: apiData.games_unknown_ids,
+                          game_known_ids: apiData.game_known_ids,
+                          game_unknown_ids: apiData.game_unknown_ids,
                           games: apiData.games,
                           teams: apiData.teams,
                           locations: apiData.locations,
