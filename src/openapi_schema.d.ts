@@ -643,10 +643,10 @@ export interface components {
             locations: {
                 [key: string]: components["schemas"]["LocationExport"] | undefined;
             };
-            /** Games Known Ids */
-            games_known_ids: number[];
-            /** Games Unknown Ids */
-            games_unknown_ids: number[];
+            /** Game Known Ids */
+            game_known_ids: number[];
+            /** Game Unknown Ids */
+            game_unknown_ids: number[];
             /** Team Id */
             team_id: number;
             division: components["schemas"]["DivisionExport"];
