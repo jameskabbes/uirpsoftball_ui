@@ -27,10 +27,10 @@ try {
   process.exit(1);
 }
 
-// const lines = JsonToTS(importedConfig.openapiSchema, {
-//   rootName: 'OpenapiSchema',
-// });
+const lines = JsonToTS(importedConfig.openapiSchema, {
+  rootName: 'OpenapiSchema',
+});
 
-// lines[0] = 'export ' + lines[0]; // Ensure the first line is exported
-// const typesOutputPath = './src/openapi_schema.d.ts';
-// writeFileSync(typesOutputPath, lines.join('\n'), 'utf8');
+lines[0] = 'export ' + lines[0]; // Ensure the first line is exported
+const typesOutputPath = './src/openapi_schema.d.ts';
+writeFileSync(typesOutputPath, lines.join('\n'), 'utf8');

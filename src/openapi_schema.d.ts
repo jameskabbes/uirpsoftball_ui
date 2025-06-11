@@ -8,12 +8,14 @@ interface Components {
   schemas: Schemas;
 }
 interface Schemas {
+  AdminResponse: AdminResponse;
   DivisionExport: DivisionExport;
   GameExport: GameExport;
   GameIdsAndRounds: GameIdsAndRounds;
   GameResponse: GameResponse;
   HTTPValidationError: HTTPValidationError;
   HomeResponse: HomeResponse;
+  IsAcceptingScoresUpdate: IsAcceptingScoresUpdate;
   LocationExport: LocationExport;
   ScheduleResponse: ScheduleResponse;
   ScoreUpdate: ScoreUpdate;
@@ -21,29 +23,30 @@ interface Schemas {
   StandingsResponse: StandingsResponse;
   TeamExport: TeamExport;
   TeamResponse: TeamResponse;
+  TeamStatisticsExport: TeamStatisticsExport;
   TournamentExport: DivisionExport;
   TournamentGameExport: TournamentGameExport;
   ValidationError: ValidationError;
   VisitExport: VisitExport;
 }
 interface VisitExport {
-  properties: Properties16;
+  properties: Properties19;
   type: string;
   required: string[];
   title: string;
 }
-interface Properties16 {
+interface Properties19 {
   id: Schema3;
   datetime: Datetime;
   path: Schema3;
 }
 interface ValidationError {
-  properties: Properties15;
+  properties: Properties18;
   type: string;
   required: string[];
   title: string;
 }
-interface Properties15 {
+interface Properties18 {
   loc: Loc;
   msg: Schema3;
   type: Schema3;
@@ -57,12 +60,12 @@ interface Items2 {
   anyOf: AnyOf[];
 }
 interface TournamentGameExport {
-  properties: Properties14;
+  properties: Properties17;
   type: string;
   required: string[];
   title: string;
 }
-interface Properties14 {
+interface Properties17 {
   game_id: Schema3;
   tournament_id: Hometeamid;
   bracket_id: Schema3;
@@ -70,34 +73,59 @@ interface Properties14 {
   home_team_filler: Hometeamid;
   away_team_filler: Hometeamid;
 }
-interface TeamResponse {
-  properties: Properties13;
+interface TeamStatisticsExport {
+  properties: Properties16;
   type: string;
   required: string[];
   title: string;
 }
-interface Properties13 {
-  games: Teams;
-  teams: Teams;
-  locations: Teams;
-  games_known_ids: Gameids;
-  games_unknown_ids: Gameids;
+interface Properties16 {
+  run_differential: Schema3;
+  game_ids_won: Gameidswon;
+  game_ids_lost: Gameidswon;
+}
+interface Gameidswon {
+  items: AnyOf;
+  type: string;
+  uniqueItems: boolean;
+  title: string;
+}
+interface TeamResponse {
+  properties: Properties15;
+  type: string;
+  required: string[];
+  title: string;
+}
+interface Properties15 {
+  games: Games;
+  teams: Games;
+  locations: Games;
+  game_known_ids: Gameids;
+  game_unknown_ids: Gameids;
   team_id: Schema3;
   division: Items;
   featured_game_id: Hometeamid;
+  team_statistics: Games;
+  team_ids_ranked: Gameids;
 }
 interface TeamExport {
-  properties: Properties12;
+  properties: Properties14;
   type: string;
   required: string[];
   title: string;
 }
-interface Properties12 {
+interface Properties14 {
   id: Schema3;
   name: Schema5;
   division_id: Hometeamid;
   slug: Schema5;
   color: Color;
+  seed: Seed;
+}
+interface Seed {
+  type: string;
+  minimum: number;
+  title: string;
 }
 interface Color {
   anyOf: AnyOf4[];
@@ -109,111 +137,153 @@ interface AnyOf4 {
   minLength?: number;
 }
 interface StandingsResponse {
+  properties: Properties13;
+  type: string;
+  required: string[];
+  title: string;
+}
+interface Properties13 {
+  teams: Games;
+  divisions: Games;
+  division_ids_ordered: Gameids;
+  team_statistics: Games;
+  team_ids_ranked_by_division: Teamidsrankedbydivision;
+  seeding_parameters: Schema2;
+}
+interface SeedingParameterExport {
+  properties: Properties12;
+  type: string;
+  required: string[];
+  title: string;
+}
+interface Properties12 {
+  id: Schema3;
+  parameter: Schema5;
+  name: Schema5;
+}
+interface ScoreUpdate {
   properties: Properties11;
   type: string;
   required: string[];
   title: string;
 }
 interface Properties11 {
-  teams: Teams;
+  home_team_score: Hometeamscore;
+  away_team_score: Hometeamscore;
 }
-interface SeedingParameterExport {
+interface ScheduleResponse {
   properties: Properties10;
   type: string;
   required: string[];
   title: string;
 }
 interface Properties10 {
-  id: Schema3;
-  parameter: Schema5;
-  name: Schema5;
+  games: Games;
+  teams: Games;
+  locations: Games;
+  game_ids_and_rounds: Schema2;
+  tournaments: Schema2;
+  tournament_games: Tournamentgames;
 }
-interface ScoreUpdate {
+interface Tournamentgames {
+  additionalProperties: AdditionalProperties4;
+  type: string;
+  title: string;
+}
+interface AdditionalProperties4 {
+  additionalProperties: AdditionalProperties3;
+  type: string;
+}
+interface AdditionalProperties3 {
+  additionalProperties: AdditionalProperties2;
+  type: string;
+}
+interface AdditionalProperties2 {
+  items: Items;
+  type: string;
+}
+interface LocationExport {
   properties: Properties9;
   type: string;
+  required: string[];
   title: string;
 }
 interface Properties9 {
-  home_team_score: Hometeamscore;
-  away_team_score: Hometeamscore;
-}
-interface ScheduleResponse {
-  properties: Properties8;
-  type: string;
-  required: string[];
-  title: string;
-}
-interface Properties8 {
-  games: Teams;
-  teams: Teams;
-  locations: Teams;
-  tournaments: Schema2;
-}
-interface LocationExport {
-  properties: Properties7;
-  type: string;
-  required: string[];
-  title: string;
-}
-interface Properties7 {
   id: Schema3;
   name: Schema5;
   link: Schema5;
   short_name: Schema5;
   time_zone: Schema5;
 }
+interface IsAcceptingScoresUpdate {
+  properties: Properties8;
+  type: string;
+  title: string;
+}
+interface Properties8 {
+  is_accepting_scores: Hometeamid;
+}
 interface HomeResponse {
-  properties: Properties6;
+  properties: Properties7;
   type: string;
   required: string[];
   title: string;
 }
-interface Properties6 {
-  games: Teams;
-  teams: Teams;
-  locations: Teams;
+interface Properties7 {
+  games: Games;
+  teams: Games;
+  locations: Games;
   game_ids_and_rounds: Schema2;
-  divisions: Teams;
+  divisions: Games;
   division_ids_ordered: Gameids;
+  team_statistics: Games;
+  team_ids_ranked_by_division: Teamidsrankedbydivision;
 }
 interface HTTPValidationError {
-  properties: Properties5;
+  properties: Properties6;
   type: string;
   title: string;
 }
-interface Properties5 {
+interface Properties6 {
   detail: Schema2;
 }
 interface GameResponse {
+  properties: Properties5;
+  type: string;
+  required: string[];
+  title: string;
+}
+interface Properties5 {
+  game: Items;
+  teams: Games;
+  location: Location;
+  divisions: Games;
+  team_statistics: Games;
+  team_ids_ranked_by_division: Teamidsrankedbydivision;
+}
+interface Teamidsrankedbydivision {
+  additionalProperties: AdditionalProperties;
+  type: string;
+  title: string;
+}
+interface AdditionalProperties {
+  items: AnyOf;
+  type: string;
+}
+interface Location {
+  anyOf: AnyOf3[];
+}
+interface AnyOf3 {
+  '$ref'?: string;
+  type?: string;
+}
+interface GameIdsAndRounds {
   properties: Properties4;
   type: string;
   required: string[];
   title: string;
 }
 interface Properties4 {
-  game: Items;
-  teams: Teams;
-  location: Location;
-}
-interface Location {
-  anyOf: AnyOf3[];
-}
-interface AnyOf3 {
-  $ref?: string;
-  type?: string;
-}
-interface Teams {
-  additionalProperties: Items;
-  type: string;
-  title: string;
-}
-interface GameIdsAndRounds {
-  properties: Properties3;
-  type: string;
-  required: string[];
-  title: string;
-}
-interface Properties3 {
   round: Schema3;
   game_ids: Gameids;
 }
@@ -223,12 +293,12 @@ interface Gameids {
   title: string;
 }
 interface GameExport {
-  properties: Properties2;
+  properties: Properties3;
   type: string;
   required: string[];
   title: string;
 }
-interface Properties2 {
+interface Properties3 {
   id: Schema3;
   round_id: Schema3;
   home_team_id: Hometeamid;
@@ -261,14 +331,31 @@ interface AnyOf {
   type: string;
 }
 interface DivisionExport {
+  properties: Properties2;
+  type: string;
+  required: string[];
+  title: string;
+}
+interface Properties2 {
+  id: Schema3;
+  name: Schema5;
+}
+interface AdminResponse {
   properties: Properties;
   type: string;
   required: string[];
   title: string;
 }
 interface Properties {
-  id: Schema3;
-  name: Schema5;
+  games: Games;
+  teams: Games;
+  locations: Games;
+  game_ids_and_rounds: Schema2;
+}
+interface Games {
+  additionalProperties: Items;
+  type: string;
+  title: string;
 }
 interface Paths {
   '/divisions/': Divisions;
@@ -278,8 +365,7 @@ interface Paths {
   '/games/': Divisions;
   '/games/{game_id}/': Divisionsdivisionid;
   '/games/{game_id}/score/': Gamesgameidscore;
-  '/games/assign-matchups/': Gamesassignmatchups;
-  '/games/reprocess-all-scores/': Gamesassignmatchups;
+  '/games/{game_id}/is-accepting-scores/': Gamesgameidisacceptingscores;
   '/locations/': Divisions;
   '/locations/{location_id}/': Divisionsdivisionid;
   '/seeding-parameters/': Divisions;
@@ -295,6 +381,7 @@ interface Paths {
   '/pages/schedule/': Pages;
   '/pages/game/{game_id}/': Divisionsdivisionid;
   '/pages/standings/': Pages;
+  '/pages/admin/': Pages;
 }
 interface Pagesteamteamslug {
   get: Get4;
@@ -330,17 +417,31 @@ interface Get3 {
 interface Responses4 {
   '200': _422;
 }
-interface Gamesassignmatchups {
-  post: Post;
+interface Gamesgameidisacceptingscores {
+  patch: Patch2;
 }
-interface Post {
+interface Patch2 {
   tags: string[];
   summary: string;
   operationId: string;
+  parameters: Parameter2[];
+  requestBody: RequestBody;
+  responses: Responses2;
+}
+interface Gamesgameidscore {
+  patch: Patch;
+}
+interface Patch {
+  tags: string[];
+  summary: string;
+  operationId: string;
+  parameters: Parameter2[];
+  requestBody: RequestBody;
   responses: Responses3;
 }
 interface Responses3 {
   '200': _2002;
+  '422': _422;
 }
 interface _2002 {
   description: string;
@@ -352,17 +453,7 @@ interface Content3 {
 interface Applicationjson3 {
   schema: Schema4;
 }
-interface Schema4 {}
-interface Gamesgameidscore {
-  patch: Patch;
-}
-interface Patch {
-  tags: string[];
-  summary: string;
-  operationId: string;
-  parameters: Parameter2[];
-  requestBody: RequestBody;
-  responses: Responses2;
+interface Schema4 {
 }
 interface RequestBody {
   required: boolean;
@@ -432,7 +523,7 @@ interface Schema2 {
   title: string;
 }
 interface Items {
-  $ref: string;
+  '$ref': string;
 }
 interface Parameter {
   name: string;
