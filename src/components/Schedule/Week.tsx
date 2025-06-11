@@ -3,7 +3,7 @@ import { Panels as BasePanels } from './Panels';
 import { getDate } from '../../utils/getDate';
 import { DateTime } from 'luxon';
 import { config } from '../../config/config';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import {
   DataProps,
   GameExportsById,

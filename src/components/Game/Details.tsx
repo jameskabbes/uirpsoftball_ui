@@ -1,5 +1,5 @@
 import React from 'react';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 
 import { BsCalendar4 } from 'react-icons/bs';
 import { BiTimeFive } from 'react-icons/bi';

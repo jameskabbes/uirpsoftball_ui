@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { paths, operations, components } from '../openapi_schema';
+import { paths, operations, components } from '../openapi_schema_client';
 import { useApiCall } from '../utils/api';
 import { Division } from '../components/Standings/Division';
 import { GridDiv } from '../components/GridDiv';

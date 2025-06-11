@@ -2,7 +2,7 @@ import React from 'react';
 import { DivisionCard } from './DivisionCard';
 import { GridDiv } from '../GridDiv';
 import { config } from '../../config/config';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import {
   DataProps,
   DivisionExportsById,

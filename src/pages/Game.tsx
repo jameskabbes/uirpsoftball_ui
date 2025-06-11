@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { callApi, useApiCall } from '../utils/api';
 import { NotFound } from '../components/Game/NotFound';
-import { paths, operations, components } from '../openapi_schema';
+import { paths, operations, components } from '../openapi_schema_client';
 
 import { Card } from '../components/Game/Card';
 import { DivisionCards } from '../components/Standings/DivisionCards';

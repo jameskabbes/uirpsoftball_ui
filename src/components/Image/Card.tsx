@@ -1,5 +1,5 @@
 import React from 'react';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import { config } from '../../config/config';
 
 function Card({ image }: { image: components['schemas']['Image'] | null }) {

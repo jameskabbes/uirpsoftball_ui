@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from './Link';
 import { DotAndName } from './DotAndName';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import { DataProps } from '../../types';
 
 interface Props

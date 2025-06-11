@@ -1,4 +1,5 @@
-import { paths, operations, components } from './openapi_schema';
+import { paths, operations, components } from './openapi_schema_client';
+import { OpenapiSchema } from './openapi_schema';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export type GetElementTypeFromArray<T extends any[]> = T extends (infer U)[]
@@ -278,11 +279,6 @@ export interface FrontendConfig {
   DEFAULT_N_DIVISIONS_PER_GAME: number;
 }
 
-export interface OpenapiSchema {
-  paths: paths;
-  components: components;
-}
-
 export interface Config {
   backendUrl: string;
   frontendUrl: string;
@@ -310,12 +306,12 @@ export type TeamExportsById = Record<
   components['schemas']['TeamExport'] | undefined
 >;
 
-export type TeamStatisticExportsByTeamId = Record<
-  components['schemas']['TeamExport']['id'],
-  components['schemas']['TeamStatisticsExport'] | undefined
->;
-
 export type DivisionExportsById = Record<
   components['schemas']['DivisionExport']['id'],
   components['schemas']['DivisionExport'] | undefined
+>;
+
+export type TeamStatisticExportsByTeamId = Record<
+  components['schemas']['TeamExport']['id'],
+  components['schemas']['TeamStatisticsExport'] | undefined
 >;

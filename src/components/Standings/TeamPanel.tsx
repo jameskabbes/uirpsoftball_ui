@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dot as TeamDot } from '../Team/Dot';
 import { Panel } from './Panel';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import { DataProps } from '../../types';
 
 interface Props

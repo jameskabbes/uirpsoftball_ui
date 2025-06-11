@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Link as ReactLink } from 'react-router-dom';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import { DataProps } from '../../types';
 import { getLink } from './getLink';
 

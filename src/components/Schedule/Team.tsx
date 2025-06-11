@@ -4,7 +4,7 @@ import { createEvent } from '../Game/createEvent';
 import { BsCalendar2Plus } from 'react-icons/bs';
 import { Panels as BasePanels } from './Panels';
 import { config } from '../../config/config';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import {
   DataProps,
   GameExportsById,

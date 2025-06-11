@@ -3,7 +3,7 @@ import { TeamPanel } from './TeamPanel';
 import { Panel } from './Panel';
 import { Link as TeamLink } from '../Team/Link';
 import { config } from '../../config/config';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import {
   DataProps,
   TeamExportsById,

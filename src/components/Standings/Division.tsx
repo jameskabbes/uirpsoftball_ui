@@ -1,7 +1,7 @@
 import React from 'react';
 import { DivisionCard } from './DivisionCard';
 import { HeadToHeadMatrix } from './HeadToHeadMatrix';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import {
   DataProps,
   TeamExportsById,

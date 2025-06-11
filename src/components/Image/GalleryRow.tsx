@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from './Card';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 
 interface ImageCard {
   imageIndex: number;

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useApiCall } from '../utils/api';
-import { paths, operations, components } from '../openapi_schema';
+import { paths, operations, components } from '../openapi_schema_client';
 import { Panels } from '../components/Schedule/Week';
 import { DivisionCards } from '../components/Standings/DivisionCards';
 import { BlockI } from '../components/icons/BlockI';

@@ -3,7 +3,7 @@ import { useApiCall } from '../utils/api';
 import { config } from '../config/config';
 import { Panels } from '../components/Schedule/Week';
 import { Tournament } from '../components/Schedule/Tournament';
-import { paths, operations, components } from '../openapi_schema';
+import { paths, operations, components } from '../openapi_schema_client';
 import { ApiServiceResponseDataByStatus } from '../types';
 import { getSchedulePage } from '../services/apiServices';
 

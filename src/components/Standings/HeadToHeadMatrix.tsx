@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Dot as TeamDot } from '../Team/Dot';
 import { DotAndName } from '../Team/DotAndName';
 import { config } from '../../config/config';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import {
   DataProps,
   TeamExportsById,

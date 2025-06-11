@@ -1,9 +1,5 @@
-import {
-  Config,
-  SharedConfig,
-  FrontendConfig,
-  OpenapiSchema,
-} from './src/types';
+import { Config, SharedConfig, FrontendConfig } from './src/types';
+import { OpenapiSchema } from './src/openapi_schema';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import path from 'path';

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 
 import { getDate } from '../../utils/getDate';
 import { DateTime } from 'luxon';

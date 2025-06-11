@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import { Link as GameLink } from './Link';
 import { BiTimeFive } from 'react-icons/bi';
 import { CiLocationOn } from 'react-icons/ci';

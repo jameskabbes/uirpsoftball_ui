@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import { Dot as TeamDot } from '../Team/Dot';
 import { Link as TeamLink } from '../Team/Link';
 import { HandleScoreChange, Score } from './Score';

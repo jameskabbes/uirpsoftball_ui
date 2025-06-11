@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dot as UtilsDot } from '../utils/Dot';
 import { getColor } from './getColor';
-import { paths, operations, components } from '../../openapi_schema';
+import { paths, operations, components } from '../../openapi_schema_client';
 import { config } from '../../config/config';
 import { DataProps } from '../../types';
 

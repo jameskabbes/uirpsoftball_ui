@@ -17,6 +17,7 @@ import {
   OpenApiOperationAt,
 } from '../types';
 import { config } from '../config/config';
+import { OpenapiSchema } from '../openapi_schema';
 
 export async function callApi<TResponseData, TRequestData = any>({
   url,
@@ -89,8 +90,10 @@ export function createApiService<
   TRequestData
 > {
   // default to find the content type from the first request content
-  let operation = config.openapiSchema.paths[path][
-    method
+  const operation = config.openapiSchema.paths[
+    path as keyof OpenapiSchema['paths']
+  ][
+    method as keyof OpenapiSchema['paths'][keyof OpenapiSchema['paths']]
   ] as OpenApiOperationAt<TPath, TMethod>;
 
   if (!requestContentType) {
@@ -128,7 +131,7 @@ export function createApiService<
     TRequestData
   >) => {
     let url: CallApiOptions<TRequestData>['url'] = path;
-    if (pathParams && typeof pathParams === 'object') {
+    if (pathParams && typeof pathParams === 'object' && url !== undefined) {
       for (const key in pathParams) {
         url = url.replace(
           `{${key}}`,
