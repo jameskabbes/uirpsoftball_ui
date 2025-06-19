@@ -33,10 +33,10 @@ function Home() {
           </h1>
           <div className="flex flex-row justify-center">
             <div className="card max-w-lg mx-auto">
-              <h2>June 16th Games Cancelled</h2>
+              <h2>Rainout Games Rescheduled</h2>
               <p>
-                Due to wet field conditions, the week 3 games originally
-                scheduled for June 16th are cancelled.
+                Rainouts games, originally scheduled for June 16th, have been
+                rescheduled to Monday, July 7th.
               </p>
             </div>
           </div>
