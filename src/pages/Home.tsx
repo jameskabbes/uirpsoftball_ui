@@ -31,15 +31,6 @@ function Home() {
               <span className="text-center">UIRP Softball</span>
             </div>
           </h1>
-          <div className="flex flex-row justify-center">
-            <div className="card max-w-lg mx-auto">
-              <h2>Rainout Games Rescheduled</h2>
-              <p>
-                Rainouts games, originally scheduled for June 16th, have been
-                rescheduled to Monday, July 7th.
-              </p>
-            </div>
-          </div>
 
           {/* 
         <GalleryRow
