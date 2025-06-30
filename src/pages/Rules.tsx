@@ -101,7 +101,7 @@ function Rules() {
                 </li>
                 <li>
                   <h6 className="inline font-semibold">
-                    No hit by pitch (HBP):
+                    No hit by pitch (HBP):{' '}
                   </h6>
                   <p className="inline">
                     All pitches that hit the batter are considered a ball
