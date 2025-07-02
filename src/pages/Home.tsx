@@ -31,6 +31,16 @@ function Home() {
               <span className="text-center">UIRP Softball</span>
             </div>
           </h1>
+          <div className="flex flex-row justify-center">
+            <div className="card max-w-lg">
+              <h2>July 7th Schedule Changes</h2>
+              <p>
+                Please note the schedule changes for July 7th. To accommodate
+                for the John Deere | Littelfuse rainout, some game times /
+                umpires have been modified.
+              </p>
+            </div>
+          </div>
 
           {/* 
         <GalleryRow
