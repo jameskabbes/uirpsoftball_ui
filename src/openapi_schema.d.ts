@@ -185,23 +185,6 @@ interface Properties10 {
   tournaments: Schema2;
   tournament_games: Tournamentgames;
 }
-interface Tournamentgames {
-  additionalProperties: AdditionalProperties4;
-  type: string;
-  title: string;
-}
-interface AdditionalProperties4 {
-  additionalProperties: AdditionalProperties3;
-  type: string;
-}
-interface AdditionalProperties3 {
-  additionalProperties: AdditionalProperties2;
-  type: string;
-}
-interface AdditionalProperties2 {
-  items: Items;
-  type: string;
-}
 interface LocationExport {
   properties: Properties9;
   type: string;
@@ -238,6 +221,25 @@ interface Properties7 {
   division_ids_ordered: Gameids;
   team_statistics: Games;
   team_ids_ranked_by_division: Teamidsrankedbydivision;
+  tournaments: Schema2;
+  tournament_games: Tournamentgames;
+}
+interface Tournamentgames {
+  additionalProperties: AdditionalProperties4;
+  type: string;
+  title: string;
+}
+interface AdditionalProperties4 {
+  additionalProperties: AdditionalProperties3;
+  type: string;
+}
+interface AdditionalProperties3 {
+  additionalProperties: AdditionalProperties2;
+  type: string;
+}
+interface AdditionalProperties2 {
+  items: Items;
+  type: string;
 }
 interface HTTPValidationError {
   properties: Properties6;

@@ -529,6 +529,16 @@ export interface components {
             team_ids_ranked_by_division: {
                 [key: string]: number[];
             };
+            /** Tournaments */
+            tournaments: components["schemas"]["TournamentExport"][];
+            /** Tournament Games */
+            tournament_games: {
+                [key: string]: {
+                    [key: string]: {
+                        [key: string]: components["schemas"]["TournamentGameExport"][];
+                    };
+                };
+            };
         };
         /** IsAcceptingScoresUpdate */
         IsAcceptingScoresUpdate: {

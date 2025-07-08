@@ -31,16 +31,6 @@ function Home() {
               <span className="text-center">UIRP Softball</span>
             </div>
           </h1>
-          <div className="flex flex-row justify-center">
-            <div className="card max-w-lg">
-              <h2>July 7th Schedule Changes</h2>
-              <p>
-                Please note the schedule changes for July 7th. To accommodate
-                for the John Deere | Littelfuse rainout, some game times /
-                umpires have been modified.
-              </p>
-            </div>
-          </div>
 
           {/* 
         <GalleryRow
@@ -92,28 +82,52 @@ function Home() {
               )}
             </GridDiv>
           </div>
-          {/* <h1 className="text-center mt-8">Tournaments</h1>
+          <h1 className="text-center mt-8">Tournaments</h1>
           <div className="flex flex-col space-y-6">
-            {data === null
-              ? null
-              : data.tournaments.map((tournament) => {
+            {apiData === undefined
+              ? undefined
+              : apiData.tournaments.map((tournament) => {
                   return (
                     <div key={tournament.id}>
                       <Tournament
                         data={{
                           tournament: tournament,
-                          tournament_games:
-                            data.tournament_games[tournament.id] || {},
-                          games: data.games,
-                          teams: data.teams,
-                          scores: data.scores,
-                          locations: data.locations,
+                          tournament_games: (() => {
+                            const games =
+                              apiData.tournament_games[tournament.id];
+                            if (!games) return {};
+
+                            return Object.entries(games).reduce(
+                              (bracketAcc, [bracketIdStr, bracketGames]) => {
+                                const bracketId = Number(bracketIdStr);
+
+                                if (bracketGames) {
+                                  bracketAcc[bracketId] = Object.entries(
+                                    bracketGames
+                                  ).reduce(
+                                    (roundAcc, [roundIdStr, roundGames]) => {
+                                      const roundId = Number(roundIdStr);
+                                      roundAcc[roundId] = roundGames || [];
+                                      return roundAcc;
+                                    },
+                                    {} as Record<number, any[]>
+                                  );
+                                }
+
+                                return bracketAcc;
+                              },
+                              {} as Record<number, Record<number, any[]>>
+                            );
+                          })(),
+                          games: apiData.games,
+                          teams: apiData.teams,
+                          locations: apiData.locations,
                         }}
                       />
                     </div>
                   );
                 })}
-          </div> */}
+          </div>
 
           <h2 className="text-center mt-4">Standings</h2>
           <DivisionCards
