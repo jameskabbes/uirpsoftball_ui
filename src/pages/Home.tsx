@@ -33,7 +33,7 @@ function Home() {
           </h1>
           <div className="flex flex-row justify-center">
             <div className="card max-w-xl">
-              <h2>Tournament Rules Changes</h2>
+              <h2>Tournament Rule Changes</h2>
               <ol>
                 <li>1. There is no mercy rule in effect.</li>
                 <li>
