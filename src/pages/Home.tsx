@@ -31,6 +31,22 @@ function Home() {
               <span className="text-center">UIRP Softball</span>
             </div>
           </h1>
+          <div className="flex flex-row justify-center">
+            <div className="card max-w-xl">
+              <h2>Tournament Rules Changes</h2>
+              <ol>
+                <li>1. There is no mercy rule in effect.</li>
+                <li>
+                  2. There is no limit to the amount of runs that can be scored
+                  in a half inning.
+                </li>
+                <li>
+                  3. The higher rated seed of the two teams (ratings after week
+                  6 games) will be the home team.
+                </li>
+              </ol>
+            </div>
+          </div>
 
           {/* 
         <GalleryRow
