@@ -11,11 +11,7 @@ import { callApi } from '../../utils/api';
 import { DateTime } from 'luxon';
 import { Dot as TeamDot } from '../Team/Dot';
 import { DataProps, TeamExportsById } from '../../types';
-import {
-  patchGameScore,
-  patchGameIsAcceptingScores,
-} from '../../services/apiServices';
-import { ApiServiceResponseDataByStatus } from '../../types';
+import { patchGameIsAcceptingScores } from '../../services/apiServices';
 
 interface Props
   extends DataProps<{
@@ -30,6 +26,7 @@ interface Props
   displayId?: boolean;
   homeTeamFiller?: string | null;
   awayTeamFiller?: string | null;
+  officiatingTeamFiller?: string | null;
 }
 
 function Panel({
@@ -41,6 +38,7 @@ function Panel({
   displayId = false,
   homeTeamFiller,
   awayTeamFiller,
+  officiatingTeamFiller,
 }: Props) {
   const [date, setDate] = useState<DateTime | null>(null);
   const [includeScore, setIncludeScore] = useState<boolean>(false);
@@ -98,6 +96,25 @@ function Panel({
   }
 
   function Component() {
+    const homeTeam =
+      data === undefined
+        ? undefined
+        : data.game.home_team_id === null
+        ? null
+        : data.teams[data.game.home_team_id] ?? null;
+    const awayTeam =
+      data === undefined
+        ? undefined
+        : data.game.away_team_id === null
+        ? null
+        : data.teams[data.game.away_team_id] ?? null;
+    const officiatingTeam =
+      data === undefined
+        ? undefined
+        : data.game.officiating_team_id === null
+        ? null
+        : data.teams[data.game.officiating_team_id] ?? null;
+
     return (
       <>
         <div className={includeLink ? 'panel' : 'panel-no-hover'}>
@@ -123,14 +140,10 @@ function Panel({
                       )}
                       <TeamDot
                         data={
-                          data === undefined
+                          awayTeam === undefined
                             ? undefined
                             : {
-                                team:
-                                  data.game.away_team_id === null
-                                    ? null
-                                    : data.teams[data.game.away_team_id] ??
-                                      null,
+                                team: awayTeam,
                               }
                         }
                       />
@@ -138,20 +151,17 @@ function Panel({
                         className={winningTeam === 'away' ? 'font-bold' : ''}
                       >
                         {(() => {
-                          if (data === undefined) return 'Away Team';
-                          if (data.game.away_team_id === null) {
+                          if (awayTeam === undefined) {
+                            return 'Away Team';
+                          } else if (awayTeam === null) {
                             if (awayTeamFiller) {
                               return awayTeamFiller;
                             } else {
                               return 'TBD';
                             }
+                          } else {
+                            return awayTeam.name;
                           }
-                          const team = data.teams[data.game.away_team_id];
-                          if (team === undefined)
-                            return awayTeamFiller
-                              ? awayTeamFiller
-                              : 'Away Team';
-                          return team.name;
                         })()}{' '}
                       </span>
                     </div>
@@ -167,14 +177,10 @@ function Panel({
                       )}
                       <TeamDot
                         data={
-                          data === undefined
+                          homeTeam === undefined
                             ? undefined
                             : {
-                                team:
-                                  data.game.home_team_id === null
-                                    ? null
-                                    : data.teams[data.game.home_team_id] ??
-                                      null,
+                                team: homeTeam,
                               }
                         }
                       />
@@ -182,20 +188,18 @@ function Panel({
                         className={winningTeam === 'home' ? 'font-bold' : ''}
                       >
                         {(() => {
-                          if (data === undefined) return 'Home Team';
-                          if (data.game.home_team_id === null) {
+                          if (homeTeam === undefined) {
+                            return 'Home Team';
+                          }
+                          if (homeTeam === null) {
                             if (homeTeamFiller) {
                               return homeTeamFiller;
                             } else {
                               return 'TBD';
                             }
+                          } else {
+                            return homeTeam.name;
                           }
-                          const team = data.teams[data.game.home_team_id];
-                          if (team === undefined)
-                            return homeTeamFiller
-                              ? homeTeamFiller
-                              : 'Home Team';
-                          return team.name;
                         })()}{' '}
                       </span>
                     </div>
@@ -253,27 +257,33 @@ function Panel({
                     <CiLocationOn className="bw-icon" />
                   </p>
                 </div>
-
-                <div className="flex flex-row space-x-1 items-center justify-end">
-                  <p>
-                    <DotAndName
-                      data={
-                        data === undefined
-                          ? undefined
-                          : {
-                              team:
-                                data.game.officiating_team_id === null
-                                  ? null
-                                  : data.teams[data.game.officiating_team_id] ??
-                                    null,
-                            }
+                <p className="flex flex-row space-x-1 items-center justify-end ">
+                  <TeamDot
+                    data={
+                      officiatingTeam === undefined
+                        ? undefined
+                        : {
+                            team: officiatingTeam,
+                          }
+                    }
+                  />
+                  <span>
+                    {(() => {
+                      if (officiatingTeam === undefined) {
+                        return 'loading...';
+                      } else if (officiatingTeam === null) {
+                        if (officiatingTeamFiller) {
+                          return officiatingTeamFiller;
+                        } else {
+                          return 'TBD';
+                        }
+                      } else {
+                        return officiatingTeam.name;
                       }
-                    />
-                  </p>
-                  <p>
-                    <UmpireMask />
-                  </p>
-                </div>
+                    })()}{' '}
+                  </span>
+                  <UmpireMask />
+                </p>
               </div>
             </div>
             {admin && (

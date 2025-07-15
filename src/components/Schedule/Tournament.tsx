@@ -55,7 +55,7 @@ function Tournament({ data }: Props) {
                   const maxRound = getMaxRound(bracket);
 
                   return (
-                    <div className="flex flex-row">
+                    <div className="flex flex-row" key={bracketId}>
                       <div
                         className="py-2"
                         key={`bracket${bracketId}`}
@@ -98,6 +98,9 @@ function Tournament({ data }: Props) {
                                       }
                                       homeTeamFiller={
                                         tournament_game.home_team_filler
+                                      }
+                                      officiatingTeamFiller={
+                                        tournament_game.officiating_team_filler
                                       }
                                     />
                                   );

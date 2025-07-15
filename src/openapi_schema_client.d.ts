@@ -699,6 +699,8 @@ export interface components {
             home_team_filler?: string | null;
             /** Away Team Filler */
             away_team_filler?: string | null;
+            /** Officiating Team Filler */
+            officiating_team_filler?: string | null;
         };
         /** ValidationError */
         ValidationError: {

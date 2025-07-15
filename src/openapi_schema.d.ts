@@ -72,6 +72,7 @@ interface Properties17 {
   round: Schema3;
   home_team_filler: Hometeamid;
   away_team_filler: Hometeamid;
+  officiating_team_filler: Hometeamid;
 }
 interface TeamStatisticsExport {
   properties: Properties16;
