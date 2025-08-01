@@ -33,6 +33,26 @@ function Home() {
           </h1>
           <div className="flex flex-row justify-center">
             <div className="card max-w-xl">
+              <h2>August 4th - Final Week</h2>
+              <p className="mb-2">
+                Due to summer employment being over for many companies, the
+                tournament schedule has been modified.
+              </p>
+              <ol>
+                <li>
+                  1. The championship game will proceed; it is now scheduled for
+                  6pm.
+                </li>
+                <li>
+                  2. All remaining players are welcome to join the game (or
+                  games) scheduled for 5pm. We will combine all remaining
+                  players into teams and play for fun.
+                </li>
+              </ol>
+            </div>
+          </div>
+          <div className="flex flex-row justify-center">
+            <div className="card max-w-xl">
               <h2>Tournament Rule Changes</h2>
               <ol>
                 <li>1. There is no mercy rule in effect.</li>
