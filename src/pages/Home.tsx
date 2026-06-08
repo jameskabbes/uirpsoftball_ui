@@ -31,7 +31,7 @@ function Home() {
               <span className="text-center">UIRP Softball</span>
             </div>
           </h1>
-          <div className="flex flex-row justify-center">
+          {/* <div className="flex flex-row justify-center">
             <div className="card max-w-xl">
               <h2>August 4th - Final Week</h2>
               <p className="mb-2">
@@ -66,7 +66,7 @@ function Home() {
                 </li>
               </ol>
             </div>
-          </div>
+          </div> */}
 
           {/* 
         <GalleryRow
@@ -118,7 +118,7 @@ function Home() {
               )}
             </GridDiv>
           </div>
-          <h1 className="text-center mt-8">Tournaments</h1>
+          {/* <h1 className="text-center mt-8">Tournaments</h1>
           <div className="flex flex-col space-y-6">
             {apiData === undefined
               ? undefined
@@ -163,7 +163,7 @@ function Home() {
                     </div>
                   );
                 })}
-          </div>
+          </div> */}
 
           <h2 className="text-center mt-4">Standings</h2>
           <DivisionCards

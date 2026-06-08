@@ -52,7 +52,7 @@ function Schedule() {
               )
             )}
           </div>
-          <h1 className="text-center mt-8">Tournaments</h1>
+          {/* <h1 className="text-center mt-8">Tournaments</h1>
           <div className="flex flex-col space-y-6">
             {apiData === undefined
               ? undefined
@@ -97,7 +97,7 @@ function Schedule() {
                     </div>
                   );
                 })}
-          </div>
+          </div> */}
         </div>
       </div>
     );
